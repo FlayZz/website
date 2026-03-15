@@ -1,0 +1,1187 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- SEO Meta Tags -->
+    <title>
+      SerruAccess | Serrurier Professionnel 24h/24 - Dépannage urgent,
+      installation, réparation
+    </title>
+    <meta
+      name="description"
+      content="SerruAccess - Votre serrurier professionnel à Paris et Île-de-France. Dépannage urgent 24h/24, installation de serrures, réparation, changement de cylindre. Intervention rapide, devis gratuit, artisans certifiés. Appelez-nous au 01 23 45 67 89."
+    />
+    <meta
+      name="keywords"
+      content="serrurier, dépannage serrurier, urgence serrurier, installation serrure, réparation serrure, changement cylindre, Paris, Île-de-France, SerruAccess"
+    />
+    <meta name="author" content="SerruAccess" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://serruaccess.fr/" />
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://serruaccess.fr/" />
+    <meta
+      property="og:title"
+      content="SerruAccess | Serrurier Professionnel 24h/24 - Dépannage urgent"
+    />
+    <meta
+      property="og:description"
+      content="Serrurier professionnel à Paris et Île-de-France. Dépannage urgent 24h/24, installation, réparation. Intervention rapide et devis gratuit."
+    />
+    <meta
+      property="og:image"
+      content="https://serruaccess.fr/images/og-image.jpg"
+    />
+    <meta property="og:locale" content="fr_FR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="SerruAccess | Serrurier Professionnel 24h/24"
+    />
+    <meta
+      name="twitter:description"
+      content="Dépannage urgent serrurier à Paris. Intervention 24h/24, devis gratuit."
+    />
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+    <!-- Structured Data - LocalBusiness -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Locksmith",
+        "name": "SerruAccess",
+        "image": "https://serruaccess.fr/images/logo.png",
+        "@id": "https://serruaccess.fr",
+        "url": "https://serruaccess.fr",
+        "telephone": "+33123456789",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "123 Rue de la Paix",
+          "addressLocality": "Paris",
+          "postalCode": "75001",
+          "addressCountry": "FR"
+        },
+        "openingHours": "Mo-Su 00:00-23:59",
+        "priceRange": "€",
+        "serviceArea": {
+          "@type": "AdministrativeArea",
+          "name": "Île-de-France"
+        },
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Services de serrurerie",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Dépannage d'urgence"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Installation de serrures"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Réparation de serrures"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Changement de cylindre"
+              }
+            }
+          ]
+        }
+      }
+    </script>
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="style.css" as="style" />
+    <link rel="preload" href="script.js" as="script" />
+
+    <!-- Inline critical CSS for above-the-fold content -->
+    <style>
+      :root {
+        --primary: #d4a574;
+        --primary-dark: #b89562;
+        --secondary: #1a1a2e;
+        --accent: #e94560;
+        --text: #222;
+        --text-light: #666;
+        --bg: #fff;
+        --bg-light: #f8f9fa;
+        --shadow:
+          0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --radius: 8px;
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        line-height: 1.6;
+        color: var(--text);
+        background: var(--bg);
+      }
+
+      /* Skip to main for accessibility */
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: var(--secondary);
+        color: white;
+        padding: 8px;
+        z-index: 100;
+        transition: top 0.3s;
+      }
+      .skip-link:focus {
+        top: 0;
+      }
+
+      header.site-header {
+        background: white;
+        box-shadow: var(--shadow);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+      }
+      .logo span {
+        color: var(--secondary);
+      }
+
+      nav ul {
+        display: none;
+        list-style: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: var(--shadow);
+      }
+      nav ul.is-open {
+        display: block;
+      }
+      nav li {
+        margin: 0.5rem 0;
+      }
+      nav a {
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 500;
+      }
+      nav a:hover,
+      nav a:focus {
+        color: var(--primary);
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+      }
+
+      .mobile-menu-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+      }
+
+      .hero {
+        background: linear-gradient(135deg, var(--secondary) 0%, #16213e 100%);
+        color: white;
+        padding: 4rem 1rem;
+        text-align: center;
+      }
+
+      .hero h1 {
+        font-size: clamp(1.5rem, 5vw, 2.5rem);
+        margin-bottom: 1rem;
+        line-height: 1.2;
+      }
+
+      .hero p {
+        font-size: clamp(1rem, 3vw, 1.25rem);
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        opacity: 0.9;
+      }
+
+      .cta-button {
+        display: inline-block;
+        background: var(--primary);
+        color: var(--secondary);
+        padding: 1rem 2rem;
+        border-radius: var(--radius);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+      }
+      .cta-button:hover,
+      .cta-button:focus {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        outline: 3px solid white;
+        outline-offset: 2px;
+      }
+
+      .trust-badges {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .badge {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+      }
+
+      .badge-icon {
+        width: 24px;
+        height: 24px;
+        fill: var(--primary);
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+      }
+
+      section {
+        margin-bottom: 3rem;
+        scroll-margin-top: 100px;
+      }
+
+      h2 {
+        font-size: clamp(1.25rem, 4vw, 1.75rem);
+        margin-bottom: 1.5rem;
+        color: var(--secondary);
+        position: relative;
+        padding-bottom: 0.5rem;
+      }
+
+      h2::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: var(--primary);
+      }
+
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .service-card {
+        background: var(--bg-light);
+        padding: 1.5rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+      }
+      .service-card:hover,
+      .service-card:focus-within {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+
+      .service-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: var(--primary-dark);
+      }
+
+      .service-card p {
+        font-size: 0.95rem;
+        color: var(--text-light);
+        line-height: 1.5;
+      }
+
+      .about-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .about-text {
+        font-size: 1rem;
+        color: var(--text-light);
+      }
+      .about-text p {
+        margin-bottom: 1rem;
+      }
+
+      .about-image {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      .about-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+        transition: var(--transition);
+      }
+
+      @media (min-width: 768px) {
+        .about-content {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .testimonial-card {
+        background: var(--bg-light);
+        padding: 1.5rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .testimonial-text {
+        font-style: italic;
+        margin-bottom: 1rem;
+        color: var(--text);
+      }
+
+      .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .author-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: white;
+      }
+
+      .author-info strong {
+        display: block;
+        font-size: 0.9rem;
+      }
+      .author-info span {
+        font-size: 0.8rem;
+        color: var(--text-light);
+      }
+
+      /* Contact Form */
+      .contact-section {
+        background: var(--bg-light);
+        padding: 2rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      @media (min-width: 768px) {
+        .contact-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .form-group {
+        margin-bottom: 1.25rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text);
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #ddd;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        font-family: inherit;
+        transition: var(--transition);
+        background: white;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.2);
+      }
+
+      input.error,
+      select.error,
+      textarea.error {
+        border-color: var(--accent);
+      }
+
+      .error-message {
+        color: var(--accent);
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: none;
+      }
+      .error-message.is-visible {
+        display: block;
+      }
+
+      .submit-btn {
+        width: 100%;
+        background: var(--primary);
+        color: var(--secondary);
+        border: none;
+        padding: 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .submit-btn:hover,
+      .submit-btn:focus {
+        background: var(--primary-dark);
+        outline: 3px solid var(--primary);
+        outline-offset: 2px;
+      }
+
+      .submit-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .form-status {
+        padding: 1rem;
+        border-radius: var(--radius);
+        margin-top: 1rem;
+        display: none;
+      }
+      .form-status.success {
+        background: #d4edda;
+        color: #155724;
+        display: block;
+      }
+      .form-status.error {
+        background: #f8d7da;
+        color: #721c24;
+        display: block;
+      }
+
+      .contact-info h3 {
+        margin-bottom: 1rem;
+        color: var(--secondary);
+      }
+
+      .info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .info-icon {
+        width: 20px;
+        height: 20px;
+        fill: var(--primary);
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      footer {
+        background: var(--secondary);
+        color: white;
+        padding: 3rem 1rem 2rem;
+      }
+
+      .footer-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      @media (min-width: 768px) {
+        .footer-grid {
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+      }
+
+      .footer-section h4 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+        font-size: 1rem;
+      }
+
+      .footer-section p,
+      .footer-section a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        font-size: 0.9rem;
+        line-height: 1.8;
+      }
+
+      .footer-section a:hover {
+        color: var(--primary);
+        text-decoration: underline;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .social-links a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        transition: var(--transition);
+      }
+
+      .social-links a:hover {
+        background: var(--primary);
+        transform: translateY(-2px);
+      }
+
+      .copyright {
+        max-width: 1200px;
+        margin: 3rem auto 0;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      /* Loading spinner */
+      .spinner {
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: var(--secondary);
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Focus visible for keyboard navigation */
+      :focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
+      }
+
+      /* Reduced motion for accessibility */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+          animation: none !important;
+        }
+      }
+    </style>
+
+    <!-- Defer non-critical CSS -->
+    <link
+      rel="stylesheet"
+      href="style.css"
+      media="print"
+      onload="this.media = 'all'"
+    />
+    <noscript><link rel="stylesheet" href="style.css" /></noscript>
+  </head>
+  <body>
+    <!-- Skip Link for Accessibility -->
+    <a href="#main" class="skip-link">Aller au contenu principal</a>
+
+    <header class="site-header" role="banner">
+      <div class="header-container">
+        <a href="/" class="logo" aria-label="SerruAccess - Accueil">
+          Serru<span>Access</span>
+        </a>
+        <button
+          class="mobile-menu-btn"
+          aria-expanded="false"
+          aria-controls="main-nav"
+          aria-label="Menu"
+        >
+          <span class="hamburger">☰</span>
+        </button>
+        <nav id="main-nav" aria-label="Navigation principale">
+          <ul id="nav-list">
+            <li><a href="#services">Services</a></li>
+            <li><a href="#about">À propos</a></li>
+            <li><a href="#testimonials">Avis</a></li>
+            <li><a href="#contact">Devis gratuit</a></li>
+            <li>
+              <a
+                href="tel:+33123456789"
+                class="cta-button"
+                style="padding: 0.5rem 1rem; font-size: 0.9rem"
+                >Appelez-nous</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" role="main">
+      <!-- Hero Section -->
+      <section class="hero" aria-labelledby="hero-title">
+        <h1 id="hero-title">
+          Serrurier professionnel 24h/24 à Paris et Île-de-France
+        </h1>
+        <p>
+          Dépannage urgent, installation et réparation de serrures. Intervention
+          rapide, devis gratuit. Artisans certifiés à votre service depuis 2010.
+        </p>
+        <a href="#contact" class="cta-button">Demander un devis gratuit</a>
+        <div class="trust-badges" aria-label="Certifications et garanties">
+          <div class="badge">
+            <svg class="badge-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+              />
+            </svg>
+            Artisan certifié
+          </div>
+          <div class="badge">
+            <svg class="badge-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path
+                d="M12 6v6l4 2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+            Intervention 24h/24
+          </div>
+          <div class="badge">
+            <svg class="badge-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                fill="currentColor"
+              />
+            </svg>
+            Devis gratuit
+          </div>
+        </div>
+      </section>
+
+      <section id="services" aria-labelledby="services-title">
+        <h2 id="services-title">Nos services de serrurerie</h2>
+        <div class="services-grid">
+          <article class="service-card">
+            <h3>🔑 Dépannage d'urgence</h3>
+            <p>
+              Ouverture de porte claquée ou verrouillée, extraction de clé
+              cassée, réparation après effraction. Intervention sous 30 minutes,
+              7j/7.
+            </p>
+          </article>
+          <article class="service-card">
+            <h3>🔐 Installation de serrures</h3>
+            <p>
+              Pose de serrures haute sécurité, blindage de porte, installation
+              de cylindres européens. Matériel certifié A2P.
+            </p>
+          </article>
+          <article class="service-card">
+            <h3>🔧 Réparation de serrures</h3>
+            <p>
+              Maintenance et réparation de tous types de serrures, remplacement
+              de gâches, ajustement de fermetures.
+            </p>
+          </article>
+          <article class="service-card">
+            <h3>🔑 Changement de cylindre</h3>
+            <p>
+              Remplacement rapide de cylindre sans changer la serrure
+              complète. Solution économique pour sécuriser votre logement.
+            </p>
+          </article>
+          <article class="service-card">
+            <h3>🏠 Copie de clés</h3>
+            <p>
+              Duplication de clés simples et protégées, cartes d'accès, badges.
+              Service en magasin ou à domicile.
+            </p>
+          </article>
+          <article class="service-card">
+            <h3>🔒 Pose de coffre-fort</h3>
+            <p>
+              Installation et fixation de coffres-forts, armoires fortes,
+              chambres fortes pour particuliers et professionnels.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="about" aria-labelledby="about-title">
+        <h2 id="about-title">À propos de SerruAccess</h2>
+        <div class="about-content">
+          <div class="about-text">
+            <p>
+              SerruAccess est votre serrurier de confiance à Paris et en
+              Île-de-France depuis 2010. Notre équipe d'artisans certifiés
+              intervient 24h/24 et 7j/7 pour tous vos besoins en serrurerie,
+              qu'il s'agisse d'une urgence ou d'un projet d'installation.
+            </p>
+            <p>
+              Nous privilégions la qualité et la transparence : toutes nos
+              interventions sont accompagnées d'un devis détaillé, et nous
+              utilisons uniquement des équipements certifiés (A2P). Notre zone
+              d'intervention s'étend à toute l'Île-de-France avec des frais de
+              déplacement compétitifs.
+            </p>
+            <p>
+              <strong>Garantie :</strong> Tous nos travaux sont garantis 1 an,
+              pièces et main-d'œuvre.
+            </p>
+          </div>
+          <div class="about-image">
+            <img
+              src="https://picsum.photos/seed/locksmith1/400/300.jpg"
+              alt="Serrurier professionnel travaillant sur une porte avec outils spécialisés"
+              width="400"
+              height="300"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section id="testimonials" aria-labelledby="testimonials-title">
+        <h2 id="testimonials-title">Ce que nos clients disent</h2>
+        <div class="testimonials-grid">
+          <blockquote class="testimonial-card">
+            <p class="testimonial-text">
+              "Intervention rapide en pleine nuit après mauvaise expérience avec
+              un autre serrurier. SerruAccess est arrivé en 25 minutes,
+              professionnel et honnête. Je recommande vivement !"
+            </p>
+            <footer class="testimonial-author">
+              <div class="author-avatar">ML</div>
+              <div class="author-info">
+                <strong>Marie L.</strong>
+                <span>Paris 11ème, 14 mars 2025</span>
+              </div>
+            </footer>
+          </blockquote>
+          <blockquote class="testimonial-card">
+            <p class="testimonial-text">
+              "J'ai fait changer ma serrure haute sécurité par SerruAccess.
+              Travail soigné, devis respecté, et la serrure est vraiment solide.
+              Excellent rapport qualité-prix."
+            </p>
+            <footer class="testimonial-author">
+              <div class="author-avatar">TD</div>
+              <div class="author-info">
+                <strong>Thomas D.</strong>
+                <span>Boulogne-Billancourt, 8 fév. 2025</span>
+              </div>
+            </footer>
+          </blockquote>
+          <blockquote class="testimonial-card">
+            <p class="testimonial-text">
+              "Après une effraction, ils sont venus le jour même pour sécuriser
+              ma porte et m'ont conseillé sur les meilleures solutions. Très
+              professionnel et rassurant."
+            </p>
+            <footer class="testimonial-author">
+              <div class="author-avatar">SP</div>
+              <div class="author-info">
+                <strong>Sophie P.</strong>
+                <span>Versailles, 20 janv. 2025</span>
+              </div>
+            </footer>
+          </blockquote>
+        </div>
+      </section>
+
+      <section
+        id="contact"
+        class="contact-section"
+        aria-labelledby="contact-title"
+      >
+        <h2 id="contact-title">Demandez votre devis gratuit</h2>
+        <div class="contact-grid">
+          <div class="contact-form-wrapper">
+            <form id="quote-form" novalidate>
+              <div class="form-group">
+                <label for="name"
+                  >Nom complet <span aria-hidden="true">*</span></label
+                >
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  aria-required="true"
+                  autocomplete="name"
+                  placeholder="Jean Dupont"
+                  minlength="2"
+                />
+                <div class="error-message" id="error-name" role="alert">
+                  Veuillez entrer votre nom (minimum 2 caractères)
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="phone"
+                  >Téléphone <span aria-hidden="true">*</span></label
+                >
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  required
+                  aria-required="true"
+                  autocomplete="tel"
+                  placeholder="06 12 34 56 78"
+                  pattern="^(0[1-9]\d{8})$|^(\+33[1-9]\d{8})$"
+                />
+                <div class="error-message" id="error-phone" role="alert">
+                  Veuillez entrer un numéro de téléphone valide (ex: 0612345678
+                  ou +33612345678)
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="email"
+                  >Email <span aria-hidden="true">*</span></label
+                >
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  aria-required="true"
+                  autocomplete="email"
+                  placeholder="jean.dupont@exemple.com"
+                />
+                <div class="error-message" id="error-email" role="alert">
+                  Veuillez entrer une adresse email valide
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="service"
+                  >Type d'intervention <span aria-hidden="true">*</span></label
+                >
+                <select
+                  id="service"
+                  name="service"
+                  required
+                  aria-required="true"
+                >
+                  <option value="">Sélectionnez un service</option>
+                  <option value="urgence">Dépannage d'urgence</option>
+                  <option value="installation">Installation de serrure</option>
+                  <option value="reparation">Réparation de serrure</option>
+                  <option value="cylindre">Changement de cylindre</option>
+                  <option value="copie">Copie de clés</option>
+                  <option value="coffre-fort">Pose de coffre-fort</option>
+                  <option value="autre">Autre demande</option>
+                </select>
+                <div class="error-message" id="error-service" role="alert">
+                  Veuillez sélectionner un type d'intervention
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="message"
+                  >Message / Détails <span aria-hidden="true">*</span></label
+                >
+                <textarea
+                  id="message"
+                  name="message"
+                  required
+                  aria-required="true"
+                  rows="5"
+                  placeholder="Décrivez votre problème ou votre besoin... (type de serrure, horaire préféré, etc.)"
+                  minlength="10"
+                ></textarea>
+                <div class="error-message" id="error-message" role="alert">
+                  Veuillez décrire votre demande (minimum 10 caractères)
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="submit-btn" id="submit-btn">
+                  <span id="btn-text">Envoyer la demande</span>
+                  <div
+                    class="spinner"
+                    id="btn-spinner"
+                    aria-hidden="true"
+                    style="display: none"
+                  ></div>
+                </button>
+              </div>
+
+              <div
+                class="form-status"
+                id="form-status"
+                role="alert"
+                aria-live="polite"
+              ></div>
+            </form>
+          </div>
+
+          <aside class="contact-info">
+            <h3>📞 Contact direct</h3>
+            <div class="info-item">
+              <svg class="info-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
+                />
+              </svg>
+              <div>
+                <strong>Téléphone (urgences)</strong><br />
+                <a href="tel:+33123456789">01 23 45 67 89</a><br />
+                <span style="font-size: 0.85rem; color: var(--text-light)"
+                  >Disponible 24h/24, 7j/7</span
+                >
+              </div>
+            </div>
+            <div class="info-item">
+              <svg class="info-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                />
+              </svg>
+              <div>
+                <strong>Adresse</strong><br />
+                123 Rue de la Paix, 75001 Paris<br />
+                <span style="font-size: 0.85rem; color: var(--text-light)"
+                  >Intervention dans toute l'Île-de-France</span
+                >
+              </div>
+            </div>
+            <div class="info-item">
+              <svg class="info-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"
+                />
+              </svg>
+              <div>
+                <strong>Horaires</strong><br />
+                Lundi - Dimanche : 00h00 - 23h59<br />
+                <span style="font-size: 0.85rem; color: var(--text-light)"
+                  >Dépannage urgent 24h/24</span
+                >
+              </div>
+            </div>
+            <div class="info-item">
+              <svg class="info-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
+                />
+              </svg>
+              <div>
+                <strong>Email</strong><br />
+                <a href="mailto:contact@serruaccess.fr"
+                  >contact@serruaccess.fr</a
+                ><br />
+                <span style="font-size: 0.85rem; color: var(--text-light)"
+                  >Réponse sous 2h</span
+                >
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer role="contentinfo">
+      <div class="footer-grid">
+        <div class="footer-section">
+          <h4>SerruAccess</h4>
+          <p>
+            Votre serrurier professionnel à Paris et en Île-de-France.
+            Intervention urgente 24h/24, qualité garantie.
+          </p>
+          <div class="social-links" aria-label="Réseaux sociaux">
+            <a
+              href="https://facebook.com/serruaccess"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+                />
+              </svg>
+            </a>
+            <a
+              href="https://instagram.com/serruaccess"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
+                />
+              </svg>
+            </a>
+            <a
+              href="https://linkedin.com/company/serruaccess"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Services</h4>
+          <p><a href="#services">Dépannage d'urgence</a></p>
+          <p><a href="#services">Installation de serrures</a></p>
+          <p><a href="#services">Réparation</a></p>
+          <p><a href="#services">Changement de cylindre</a></p>
+          <p><a href="#services">Copie de clés</a></p>
+        </div>
+        <div class="footer-section">
+          <h4>Zone d'intervention</h4>
+          <p>
+            Paris (75), Hauts-de-Seine (92), Seine-Saint-Denis (93),
+            Val-de-Marne (94), Yvelines (78), Essonne (91), Val-d'Oise (95),
+            Seine-et-Marne (77)
+          </p>
+        </div>
+        <div class="footer-section">
+          <h4>Contact</h4>
+          <p><a href="tel:+33123456789">01 23 45 67 89</a></p>
+          <p>
+            <a href="mailto:contact@serruaccess.fr">contact@serruaccess.fr</a>
+          </p>
+          <p>123 Rue de la Paix<br />75001 Paris, France</p>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>
+          &copy; 2025 SerruAccess. Tous droits réservés. |
+          <a
+            href="/mentions-legales"
+            style="color: inherit; text-decoration: underline"
+            >Mentions légales</a
+          >
+        </p>
+      </div>
+    </footer>
+
+    <!-- Defer JavaScript -->
+    <script src="script.js" defer></script>
+  </body>
+</html>
