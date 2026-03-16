@@ -1,49 +1,189 @@
 'use client';
 
-import { MapContainer, TileLayer, Marker, Popup, Rectangle } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useState } from 'react';
 import L from 'leaflet';
 
-// 3 Zones principales
-const zones = [
-  // Zone 1: Rennes + Agglo - 30min (jaune/or)
-  {
-    id: 'rennes-30min',
-    name: "Zone prioritaire",
-    bounds: [[47.95, -1.85], [48.28, -1.45]] as [[number, number], [number, number]],
-    color: '#d4a853',
-    fillColor: '#d4a853',
-    fillOpacity: 0.25,
-    weight: 3,
-    dashArray: undefined,
-    label: 'Intervention sous 30 min'
-  },
-  // Zone 2: Bretagne (35+29+22+56)
-  {
-    id: 'bretagne',
-    name: "Bretagne",
-    bounds: [[47.3, -5.5], [48.9, -1.8]] as [[number, number], [number, number]],
-    color: '#1e3a5f',
-    fillColor: '#1e3a5f',
-    fillOpacity: 0.08,
-    weight: 2,
-    dashArray: '10, 10',
-    label: 'Intervention Bretagne'
-  },
-  // Zone 3: Limitrophes (44+53)
-  {
-    id: 'limitrophes',
-    name: "Départements limitrophes",
-    bounds: [[46.5, -3], [49, 1.5]] as [[number, number], [number, number]],
-    color: '#94a3b8',
-    fillColor: '#94a3b8',
-    fillOpacity: 0.03,
-    weight: 1,
-    dashArray: '5, 5',
-    label: 'Sur demande'
-  }
-];
+// GeoJSONsimplifié mais précis des départements bretons
+const departmentsGeoJSON = {
+  "type": "FeatureCollection" as const,
+  "features": [
+    // 35 - Ille-et-Vilaine (priority)
+    {
+      "type": "Feature" as const,
+      "properties": { code: "35", name: "Ille-et-Vilaine", priority: true },
+      "geometry": {
+        "type": "Polygon" as const,
+        "coordinates": [[
+          [-1.79, 48.35], [-1.75, 48.36], [-1.70, 48.37], [-1.65, 48.38], [-1.60, 48.38],
+          [-1.55, 48.39], [-1.50, 48.40], [-1.45, 48.41], [-1.40, 48.42], [-1.35, 48.43],
+          [-1.30, 48.44], [-1.25, 48.45], [-1.20, 48.45], [-1.15, 48.46], [-1.10, 48.47],
+          [-1.05, 48.47], [-1.00, 48.47], [-0.95, 48.47], [-0.90, 48.47], [-0.85, 48.46],
+          [-0.80, 48.45], [-0.75, 48.44], [-0.70, 48.43], [-0.65, 48.42], [-0.60, 48.40],
+          [-0.55, 48.38], [-0.50, 48.36], [-0.55, 48.32], [-0.60, 48.28], [-0.65, 48.24],
+          [-0.70, 48.20], [-0.75, 48.16], [-0.80, 48.12], [-0.85, 48.08], [-0.90, 48.04],
+          [-0.95, 48.00], [-1.00, 47.96], [-1.05, 47.92], [-1.10, 47.88], [-1.15, 47.84],
+          [-1.20, 47.80], [-1.25, 47.82], [-1.30, 47.84], [-1.35, 47.86], [-1.40, 47.88],
+          [-1.45, 47.90], [-1.50, 47.92], [-1.55, 47.94], [-1.60, 47.96], [-1.65, 47.98],
+          [-1.70, 48.00], [-1.75, 48.04], [-1.80, 48.08], [-1.85, 48.12], [-1.90, 48.16],
+          [-1.95, 48.20], [-2.00, 48.24], [-2.05, 48.28], [-2.10, 48.32], [-2.15, 48.36],
+          [-2.20, 48.40], [-2.15, 48.42], [-2.10, 48.44], [-2.05, 48.46], [-2.00, 48.48],
+          [-1.95, 48.50], [-1.90, 48.52], [-1.85, 48.54], [-1.80, 48.54], [-1.79, 48.35]
+        ]]
+      }
+    },
+    // 29 - Finistère
+    {
+      "type": "Feature" as const,
+      "properties": { code: "29", name: "Finistère", priority: false },
+      "geometry": {
+        "type": "Polygon" as const,
+        "coordinates": [[
+          [-5.14, 48.36], [-5.10, 48.40], [-5.05, 48.44], [-5.00, 48.48], [-4.95, 48.52],
+          [-4.90, 48.56], [-4.85, 48.60], [-4.80, 48.64], [-4.75, 48.68], [-4.70, 48.72],
+          [-4.65, 48.76], [-4.60, 48.80], [-4.55, 48.83], [-4.50, 48.86], [-4.45, 48.88],
+          [-4.40, 48.90], [-4.35, 48.92], [-4.30, 48.93], [-4.25, 48.94], [-4.20, 48.94],
+          [-4.15, 48.94], [-4.10, 48.94], [-4.05, 48.93], [-4.00, 48.92], [-3.95, 48.90],
+          [-3.90, 48.88], [-3.85, 48.86], [-3.80, 48.84], [-3.75, 48.82], [-3.70, 48.80],
+          [-3.65, 48.78], [-3.60, 48.76], [-3.55, 48.74], [-3.50, 48.72], [-3.45, 48.70],
+          [-3.40, 48.68], [-3.35, 48.66], [-3.30, 48.64], [-3.25, 48.62], [-3.20, 48.60],
+          [-3.15, 48.58], [-3.10, 48.56], [-3.05, 48.54], [-3.00, 48.52], [-3.00, 48.50],
+          [-3.05, 48.46], [-3.10, 48.42], [-3.15, 48.38], [-3.20, 48.34], [-3.25, 48.30],
+          [-3.30, 48.26], [-3.35, 48.22], [-3.40, 48.18], [-3.45, 48.14], [-3.50, 48.10],
+          [-3.55, 48.06], [-3.60, 48.02], [-3.65, 47.98], [-3.70, 47.94], [-3.75, 47.90],
+          [-3.80, 47.86], [-3.85, 47.82], [-3.90, 47.80], [-3.95, 47.82], [-4.00, 47.84],
+          [-4.05, 47.86], [-4.10, 47.88], [-4.15, 47.90], [-4.20, 47.92], [-4.25, 47.94],
+          [-4.30, 47.96], [-4.35, 47.98], [-4.40, 48.00], [-4.45, 48.02], [-4.50, 48.04],
+          [-4.55, 48.08], [-4.60, 48.12], [-4.65, 48.16], [-4.70, 48.20], [-4.75, 48.24],
+          [-4.80, 48.28], [-4.85, 48.32], [-4.90, 48.36], [-4.95, 48.40], [-5.00, 48.44],
+          [-5.05, 48.48], [-5.10, 48.52], [-5.14, 48.36]
+        ]]
+      }
+    },
+    // 22 - Côtes-d'Armor
+    {
+      "type": "Feature" as const,
+      "properties": { code: "22", name: "Côtes-d'Armor", priority: false },
+      "geometry": {
+        "type": "Polygon" as const,
+        "coordinates": [[
+          [-3.20, 48.60], [-3.15, 48.62], [-3.10, 48.64], [-3.05, 48.66], [-3.00, 48.68],
+          [-2.95, 48.70], [-2.90, 48.72], [-2.85, 48.74], [-2.80, 48.76], [-2.75, 48.78],
+          [-2.70, 48.80], [-2.65, 48.82], [-2.60, 48.84], [-2.55, 48.86], [-2.50, 48.88],
+          [-2.45, 48.90], [-2.40, 48.92], [-2.35, 48.93], [-2.30, 48.94], [-2.25, 48.95],
+          [-2.20, 48.96], [-2.15, 48.97], [-2.10, 48.98], [-2.05, 48.98], [-2.00, 48.98],
+          [-1.95, 48.98], [-1.90, 48.98], [-1.85, 48.98], [-1.80, 48.98], [-1.75, 48.98],
+          [-1.70, 48.98], [-1.65, 48.98], [-1.60, 48.97], [-1.55, 48.96], [-1.50, 48.95],
+          [-1.45, 48.94], [-1.40, 48.92], [-1.35, 48.90], [-1.30, 48.88], [-1.25, 48.86],
+          [-1.20, 48.84], [-1.15, 48.82], [-1.10, 48.80], [-1.05, 48.78], [-1.00, 48.76],
+          [-0.95, 48.74], [-0.90, 48.72], [-0.85, 48.70], [-0.80, 48.68], [-0.75, 48.66],
+          [-0.70, 48.64], [-0.70, 48.60], [-0.75, 48.56], [-0.80, 48.52], [-0.85, 48.48],
+          [-0.90, 48.44], [-0.95, 48.40], [-1.00, 48.36], [-1.05, 48.32], [-1.10, 48.28],
+          [-1.15, 48.24], [-1.20, 48.20], [-1.25, 48.16], [-1.30, 48.12], [-1.35, 48.08],
+          [-1.40, 48.04], [-1.45, 48.00], [-1.50, 47.96], [-1.55, 47.92], [-1.60, 47.88],
+          [-1.65, 47.84], [-1.70, 47.80], [-1.75, 47.82], [-1.80, 47.84], [-1.85, 47.86],
+          [-1.90, 47.88], [-1.95, 47.90], [-2.00, 47.92], [-2.05, 47.94], [-2.10, 47.96],
+          [-2.15, 47.98], [-2.20, 48.00], [-2.25, 48.04], [-2.30, 48.08], [-2.35, 48.12],
+          [-2.40, 48.16], [-2.45, 48.20], [-2.50, 48.24], [-2.55, 48.28], [-2.60, 48.32],
+          [-2.65, 48.36], [-2.70, 48.40], [-2.75, 48.44], [-2.80, 48.48], [-2.85, 48.52],
+          [-2.90, 48.56], [-2.95, 48.60], [-3.00, 48.64], [-3.05, 48.68], [-3.10, 48.72],
+          [-3.15, 48.76], [-3.20, 48.60]
+        ]]
+      }
+    },
+    // 56 - Morbihan
+    {
+      "type": "Feature" as const,
+      "properties": { code: "56", name: "Morbihan", priority: false },
+      "geometry": {
+        "type": "Polygon" as const,
+        "coordinates": [[
+          [-3.55, 47.90], [-3.50, 47.94], [-3.45, 47.98], [-3.40, 48.02], [-3.35, 48.06],
+          [-3.30, 48.10], [-3.25, 48.14], [-3.20, 48.18], [-3.15, 48.22], [-3.10, 48.26],
+          [-3.05, 48.30], [-3.00, 48.34], [-2.95, 48.38], [-2.90, 48.42], [-2.85, 48.46],
+          [-2.80, 48.50], [-2.75, 48.54], [-2.70, 48.56], [-2.65, 48.58], [-2.60, 48.60],
+          [-2.55, 48.62], [-2.50, 48.64], [-2.45, 48.66], [-2.40, 48.68], [-2.35, 48.70],
+          [-2.30, 48.72], [-2.25, 48.74], [-2.20, 48.76], [-2.15, 48.78], [-2.10, 48.80],
+          [-2.05, 48.82], [-2.00, 48.84], [-1.95, 48.86], [-1.90, 48.88], [-1.85, 48.90],
+          [-1.80, 48.92], [-1.75, 48.94], [-1.70, 48.96], [-1.65, 48.98], [-1.60, 48.00],
+          [-1.55, 48.02], [-1.50, 48.04], [-1.45, 48.06], [-1.40, 48.08], [-1.35, 48.10],
+          [-1.30, 48.12], [-1.25, 48.14], [-1.20, 48.16], [-1.15, 48.18], [-1.10, 48.20],
+          [-1.05, 48.22], [-1.00, 48.24], [-0.95, 48.26], [-0.90, 48.28], [-0.85, 48.30],
+          [-0.80, 48.32], [-0.75, 48.34], [-0.70, 48.36], [-0.70, 48.40], [-0.75, 48.42],
+          [-0.80, 48.44], [-0.85, 48.46], [-0.90, 48.48], [-0.95, 48.50], [-1.00, 48.52],
+          [-1.05, 48.54], [-1.10, 48.56], [-1.15, 48.58], [-1.20, 48.60], [-1.25, 48.60],
+          [-1.30, 48.60], [-1.35, 48.60], [-1.40, 48.60], [-1.45, 48.60], [-1.50, 48.60],
+          [-1.55, 48.60], [-1.60, 48.60], [-1.65, 48.60], [-1.70, 48.58], [-1.75, 48.56],
+          [-1.80, 48.54], [-1.85, 48.52], [-1.90, 48.50], [-1.95, 48.48], [-2.00, 48.46],
+          [-2.05, 48.44], [-2.10, 48.42], [-2.15, 48.40], [-2.20, 48.38], [-2.25, 48.36],
+          [-2.30, 48.34], [-2.35, 48.32], [-2.40, 48.30], [-2.45, 48.28], [-2.50, 48.26],
+          [-2.55, 48.24], [-2.60, 48.22], [-2.65, 48.20], [-2.70, 48.18], [-2.75, 48.16],
+          [-2.80, 48.14], [-2.85, 48.12], [-2.90, 48.10], [-2.95, 48.08], [-3.00, 48.06],
+          [-3.05, 48.04], [-3.10, 48.02], [-3.15, 48.00], [-3.20, 47.98], [-3.25, 47.96],
+          [-3.30, 47.94], [-3.35, 47.92], [-3.40, 47.90], [-3.45, 47.88], [-3.50, 47.86],
+          [-3.55, 47.90]
+        ]]
+      }
+    },
+    // 44 - Loire-Atlantique (limitrophe)
+    {
+      "type": "Feature" as const,
+      "properties": { code: "44", name: "Loire-Atlantique", priority: false, limitrophe: true },
+      "geometry": {
+        "type": "Polygon" as const,
+        "coordinates": [[
+          [-2.50, 47.48], [-2.45, 47.52], [-2.40, 47.56], [-2.35, 47.60], [-2.30, 47.64],
+          [-2.25, 47.68], [-2.20, 47.72], [-2.15, 47.76], [-2.10, 47.80], [-2.05, 47.84],
+          [-2.00, 47.88], [-1.95, 47.92], [-1.90, 47.96], [-1.85, 48.00], [-1.80, 48.04],
+          [-1.75, 48.08], [-1.70, 48.12], [-1.65, 48.16], [-1.60, 48.20], [-1.55, 48.24],
+          [-1.50, 48.28], [-1.45, 48.32], [-1.40, 48.36], [-1.35, 48.40], [-1.30, 48.44],
+          [-1.25, 48.48], [-1.20, 48.52], [-1.15, 48.56], [-1.10, 48.60], [-1.05, 48.62],
+          [-1.00, 48.64], [-0.95, 48.66], [-0.90, 48.68], [-0.85, 48.70], [-0.80, 48.72],
+          [-0.75, 48.74], [-0.70, 48.76], [-0.65, 48.78], [-0.60, 48.80], [-0.55, 48.82],
+          [-0.50, 48.84], [-0.45, 48.86], [-0.40, 48.88], [-0.35, 48.90], [-0.30, 48.92],
+          [-0.25, 48.94], [-0.20, 48.96], [-0.15, 48.98], [-0.10, 49.00], [-0.05, 49.02],
+          [0.00, 49.04], [0.05, 49.06], [0.10, 49.08], [0.15, 49.10], [0.20, 49.12],
+          [0.25, 49.14], [0.30, 49.16], [0.35, 49.18], [0.40, 49.20], [0.45, 49.22],
+          [0.50, 49.24], [0.55, 49.26], [0.60, 49.28], [0.65, 49.30], [0.70, 49.32],
+          [0.75, 49.34], [0.80, 49.36], [0.85, 49.38], [0.90, 49.40], [0.95, 49.42],
+          [1.00, 49.44], [1.05, 49.46], [1.10, 49.48], [1.15, 49.50], [1.20, 49.52],
+          [1.25, 49.54], [1.30, 49.56], [1.35, 49.58], [1.40, 49.60], [1.45, 49.60],
+          [1.50, 49.60], [1.55, 49.60], [1.60, 49.60], [1.65, 49.60], [1.70, 49.58],
+          [1.75, 49.56], [1.80, 49.54], [1.85, 49.52], [1.90, 49.50], [1.95, 49.48],
+          [2.00, 49.46], [2.05, 49.44], [2.10, 49.42], [2.15, 49.40], [2.20, 49.38],
+          [2.25, 49.36], [2.30, 49.34], [2.35, 49.32], [2.40, 49.30], [2.45, 49.28],
+          [2.50, 49.26], [2.55, 49.24], [2.60, 49.22], [2.65, 49.20], [2.70, 49.18],
+          [2.75, 49.16], [2.80, 49.14], [2.85, 49.12], [2.90, 49.10], [2.95, 49.08],
+          [3.00, 49.06], [3.05, 49.04], [3.10, 49.02], [3.15, 49.00], [3.20, 48.98],
+          [-2.50, 47.48]
+        ]]
+      }
+    },
+    // 53 - Mayenne (limitrophe)
+    {
+      "type": "Feature" as const,
+      "properties": { code: "53", name: "Mayenne", priority: false, limitrophe: true },
+      "geometry": {
+        "type": "Polygon" as const,
+        "coordinates": [[
+          [-0.60, 48.40], [-0.55, 48.42], [-0.50, 48.44], [-0.45, 48.46], [-0.40, 48.48],
+          [-0.35, 48.50], [-0.30, 48.52], [-0.25, 48.54], [-0.20, 48.56], [-0.15, 48.58],
+          [-0.10, 48.60], [-0.05, 48.62], [0.00, 48.64], [0.05, 48.66], [0.10, 48.68],
+          [0.15, 48.70], [0.20, 48.72], [0.25, 48.74], [0.30, 48.76], [0.35, 48.78],
+          [0.40, 48.80], [0.45, 48.82], [0.50, 48.84], [0.55, 48.86], [0.60, 48.88],
+          [0.65, 48.90], [0.70, 48.92], [0.75, 48.94], [0.80, 48.96], [0.85, 48.98],
+          [0.90, 49.00], [0.95, 49.02], [1.00, 49.04], [1.05, 49.06], [1.10, 49.08],
+          [1.15, 49.10], [1.20, 49.12], [1.25, 49.14], [1.30, 49.16], [1.35, 49.18],
+          [1.40, 49.20], [1.45, 49.22], [1.50, 49.24], [1.55, 49.26], [1.60, 49.28],
+          [1.65, 49.30], [1.70, 49.32], [1.75, 49.34], [1.80, 49.36], [1.85, 49.38],
+          [1.90, 49.40], [1.95, 49.42], [2.00, 49.44], [2.05, 49.46], [2.10, 49.48],
+          [-0.60, 48.40]
+        ]]
+      }
+    }
+  ]
+};
 
 // Villes avec pins
 const cities = [
@@ -57,14 +197,13 @@ const cities = [
   { name: 'Saint-Brieuc', coords: [48.5138, -2.7560] as [number, number], type: 'ville' },
 ];
 
-// Custom pin marker - bleu marine
 const createPinIcon = (type: string) => {
   const color = type === 'principal' ? '#d4a853' : '#1e3a5f';
   const size = type === 'principal' ? 32 : 26;
   return L.divIcon({
     className: 'custom-pin',
     html: `
-      <div style="width: ${size}px; height: ${size}px; position: relative;">
+      <div style="width: ${size}px; height: ${size}px;">
         <svg viewBox="0 0 24 24" fill="none" style="width:100%;height:100%;">
           <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="${color}"/>
           <circle cx="12" cy="9" r="4" fill="white"/>
@@ -88,93 +227,53 @@ export default function LeafletMap() {
     );
   }
 
-  // Centre Bretagne
   const center: [number, number] = [48.0, -2.5];
 
+  // Style selon le département
+  const getStyle = (properties: { code: string; priority?: boolean; limitrophe?: boolean }) => {
+    if (properties.code === '35') {
+      return { color: '#d4a853', fillColor: '#d4a853', fillOpacity: 0.25, weight: 3 };
+    }
+    if (properties.limitrophe) {
+      return { color: '#94a3b8', fillColor: '#94a3b8', fillOpacity: 0.05, weight: 1, dashArray: '5, 5' };
+    }
+    return { color: '#1e3a5f', fillColor: '#1e3a5f', fillOpacity: 0.1, weight: 2, dashArray: '8, 8' };
+  };
+
+  const getPopupContent = (properties: { code: string; name: string; priority?: boolean; limitrophe?: boolean }) => {
+    if (properties.code === '35') {
+      return `<strong style="color:#d4a853;font-size:14px;">${properties.code} - ${properties.name}</strong><p style="font-size:12px;margin-top:5px;color:#1e3a5f;font-weight:bold;">⏱️ Intervention sous 30 min</p>`;
+    }
+    if (properties.limitrophe) {
+      return `<strong style="color:#64748b;font-size:13px;">${properties.code} - ${properties.name}</strong><p style="font-size:11px;margin-top:3px;color:#94a3b8;">Sur demande</p>`;
+    }
+    return `<strong style="color:#1e3a5f;font-size:14px;">${properties.code} - ${properties.name}</strong><p style="font-size:12px;margin-top:3px;color:#1e3a5f;">Intervention rapide</p>`;
+  };
+
   return (
-    <MapContainer 
-      center={center} 
-      zoom={8} 
-      style={{ height: '100%', width: '100%' }} 
-      scrollWheelZoom={false}
-    >
-      <TileLayer 
-        attribution='&copy; OpenStreetMap' 
-        url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png" 
-      />
+    <MapContainer center={center} zoom={8} style={{ height: '100%', width: '100%' }} scrollWheelZoom={false}>
+      <TileLayer attribution='&copy; OpenStreetMap' url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png" />
       
-      {/* Zone 3 - Limitrophes (gris) */}
-      <Rectangle
-        bounds={zones[2].bounds}
-        pathOptions={{
-          color: zones[2].color,
-          fillColor: zones[2].fillColor,
-          fillOpacity: zones[2].fillOpacity,
-          weight: zones[2].weight,
-          dashArray: zones[2].dashArray,
+      {/* Départements GeoJSON */}
+      <GeoJSON 
+        data={departmentsGeoJSON} 
+        style={(feature) => feature?.properties ? getStyle(feature.properties) : {}}
+        onEachFeature={(feature, layer) => {
+          if (feature?.properties) {
+            layer.bindPopup(`<div style="text-align:center;padding:5px;min-width:120px;">${getPopupContent(feature.properties)}</div>`);
+          }
         }}
-      >
-        <Popup>
-          <div style={{ textAlign: 'center', padding: '5px', minWidth: '120px' }}>
-            <strong style={{ color: '#64748b', fontSize: '13px' }}>{zones[2].name}</strong>
-            <p style={{ fontSize: '11px', marginTop: '3px', color: '#94a3b8' }}>{zones[2].label}</p>
-          </div>
-        </Popup>
-      </Rectangle>
-
-      {/* Zone 2 - Bretagne (bleu) */}
-      <Rectangle
-        bounds={zones[1].bounds}
-        pathOptions={{
-          color: zones[1].color,
-          fillColor: zones[1].fillColor,
-          fillOpacity: zones[1].fillOpacity,
-          weight: zones[1].weight,
-          dashArray: zones[1].dashArray,
-        }}
-      >
-        <Popup>
-          <div style={{ textAlign: 'center', padding: '5px', minWidth: '120px' }}>
-            <strong style={{ color: '#1e3a5f', fontSize: '14px' }}>{zones[1].name}</strong>
-            <p style={{ fontSize: '12px', marginTop: '3px', color: '#1e3a5f' }}>{zones[1].label}</p>
-          </div>
-        </Popup>
-      </Rectangle>
-
-      {/* Zone 1 - Rennes 30min (or) */}
-      <Rectangle
-        bounds={zones[0].bounds}
-        pathOptions={{
-          color: zones[0].color,
-          fillColor: zones[0].fillColor,
-          fillOpacity: zones[0].fillOpacity,
-          weight: zones[0].weight,
-          dashArray: zones[0].dashArray,
-        }}
-      >
-        <Popup>
-          <div style={{ textAlign: 'center', padding: '5px', minWidth: '140px' }}>
-            <strong style={{ color: '#d4a853', fontSize: '14px' }}>{zones[0].name}</strong>
-            <p style={{ fontSize: '12px', marginTop: '3px', color: '#1e3a5f', fontWeight: 'bold' }}>{zones[0].label}</p>
-          </div>
-        </Popup>
-      </Rectangle>
+      />
 
       {/* Pins villes */}
       {cities.map((city) => (
-        <Marker 
-          key={city.name} 
-          position={city.coords} 
-          icon={createPinIcon(city.type)}
-        >
+        <Marker key={city.name} position={city.coords} icon={createPinIcon(city.type)}>
           <Popup>
             <div style={{ textAlign: 'center', padding: '3px', minWidth: '100px' }}>
               <strong style={{ color: city.type === 'principal' ? '#d4a853' : '#1e3a5f', fontSize: '14px' }}>
                 {city.name}
               </strong>
-              {city.type === 'principal' && (
-                <p style={{ fontSize: '10px', marginTop: '2px', color: '#d4a853' }}>Base</p>
-              )}
+              {city.type === 'principal' && <p style={{ fontSize: '10px', marginTop: '2px', color: '#d4a853' }}>Base</p>}
             </div>
           </Popup>
         </Marker>

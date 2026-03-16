@@ -6,14 +6,16 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Marques certifiées - logos texte
 const brands = [
-  { name: 'Fichet', logo: '/fichet.png' },
-  { name: 'Vachette', logo: '/vachette.png' },
-  { name: 'Bricard', logo: '/bricard.png' },
-  { name: 'Abus', logo: '/abus.png' },
-  { name: 'Kaba', logo: '/kaba.png' },
-  { name: 'APD', logo: '/apd.png' },
-  { name: 'Tesa', logo: '/tesa.png' },
+  { name: 'FICHET', color: '#1e3a5f' },
+  { name: 'VACHETTE', color: '#1e3a5f' },
+  { name: 'BRICARD', color: '#1e3a5f' },
+  { name: 'ABUS', color: '#1e3a5f' },
+  { name: 'KABA', color: '#1e3a5f' },
+  { name: 'APD', color: '#1e3a5f' },
+  { name: 'TESA', color: '#1e3a5f' },
+  { name: 'HERACLES', color: '#1e3a5f' },
 ];
 
 export default function TrustBar() {
@@ -43,42 +45,28 @@ export default function TrustBar() {
   return (
     <section 
       ref={sectionRef}
-      className="py-8 bg-white dark:bg-slate-800 border-y border-gray-200 dark:border-slate-700 transition-colors"
+      className="py-6 border-y"
+      style={{ backgroundColor: 'var(--background)', borderColor: 'var(--border)' }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <p className="text-center text-sm font-medium mb-8 text-gray-500 dark:text-gray-400 uppercase tracking-widest">
-          Marque·s certifié·e·s et partenaire·s assurance
+      <div className="max-w-7xl mx-auto px-4">
+        <p className="text-center text-sm font-medium mb-6 uppercase tracking-widest" style={{ color: 'var(--muted-foreground)' }}>
+          Marques certifiees et partenaires assurance
         </p>
         
-        {/* Marquee infini avec CSS */}
+        {/* Logo marque -scroll horizontal infini */}
         <div className="relative overflow-hidden">
-          <div className="flex animate-marquee whitespace-nowrap items-center">
-            {[...brands, ...brands, ...brands].map((brand, index) => (
+          <div className="flex whitespace-nowrap items-center" style={{ animation: 'marquee 25s linear infinite' }}>
+            {[...brands, ...brands, ...brands, ...brands].map((brand, index) => (
               <div 
                 key={index}
-                className="trust-item inline-flex items-center mx-12 opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0 duration-500"
+                className="trust-item inline-flex items-center mx-8"
               >
-                <div 
-                  className="w-32 h-20 rounded-2xl flex items-center justify-center bg-gray-50/50 dark:bg-slate-700/30 backdrop-blur-sm"
+                <span 
+                  className="text-2xl font-bold tracking-wider"
+                  style={{ color: brand.color, fontFamily: 'Space Grotesk, sans-serif', opacity: 0.7 }}
                 >
-                  {brand.logo.startsWith('/') ? (
-                    <img 
-                      src={brand.logo} 
-                      alt={brand.name} 
-                      className="max-w-[80%] max-h-[70%] object-contain"
-                      title={brand.name}
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                        const parent = (e.target as any).parentNode;
-                        if (parent && brand.name) {
-                          parent.innerHTML = `<span class="text-2xl font-bold text-gray-400">${brand.name.charAt(0)}</span>`;
-                        }
-                      }}
-                    />
-                  ) : (
-                    <span className="text-4xl">{brand.logo}</span>
-                  )}
-                </div>
+                  {brand.name}
+                </span>
               </div>
             ))}
           </div>
@@ -89,12 +77,6 @@ export default function TrustBar() {
         @keyframes marquee {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
-        }
-        .animate-marquee {
-          animation: marquee 30s linear infinite;
-        }
-        .animate-marquee:hover {
-          animation-play-state: paused;
         }
       `}</style>
     </section>
