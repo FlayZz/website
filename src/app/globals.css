@@ -5,18 +5,61 @@
 @tailwind utilities;
 
 :root {
+  /* Light mode */
+  --background: #f8f6f0;
+  --foreground: #1a1a2e;
+  --card: #ffffff;
+  --card-foreground: #1a1a2e;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a2e;
   --primary: #1e3a5f;
-  --primary-dark: #152a45;
-  --primary-light: #2a4f7a;
+  --primary-foreground: #ffffff;
+  --secondary: #f8f6f0;
+  --secondary-foreground: #1a1a2e;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
   --accent: #d4a853;
-  --accent-light: #e5c275;
-  --bg-light: #f8f6f0;
-  --bg-dark: #0f0f1a;
+  --accent-foreground: #1e3a5f;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #1e3a5f;
+  
+  /* Brand colors */
+  --brand-primary: #1e3a5f;
+  --brand-accent: #d4a853;
+  --brand-gold: #d4a853;
+}
+
+.dark {
+  /* Dark mode */
+  --background: #0f0f1a;
+  --foreground: #f8f6f0;
+  --card: #1e293b;
+  --foreground: #f1f5f9;
+  --popover: #1e293b;
+  --popover-foreground: #f1f5f9;
+  --primary: #1e3a5f;
+  --primary-foreground: #ffffff;
+  --secondary: #1e293b;
+  --secondary-foreground: #f1f5f9;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #d4a853;
+  --accent-foreground: #1e3a5f;
+  --destructive: #7f1d1d;
+  --destructive-foreground: #f1f5f9;
+  --border: #334155;
+  --input: #334155;
+  --ring: #d4a853;
 }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  @apply bg-gray-50 text-gray-900 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300;
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Smooth scroll behavior for Lenis */
@@ -36,35 +79,46 @@ html.lenis {
   overflow: hidden;
 }
 
-/* Dark mode specific overrides */
-.dark {
-  --bg-light: #0f0f1a;
-}
-
-/* Section backgrounds */
-.section-light {
-  @apply bg-white dark:bg-slate-800;
-}
-
-.section-dark {
-  @apply bg-gray-50 dark:bg-slate-900;
-}
-
-/* Card styles */
-.card {
-  @apply bg-white dark:bg-slate-800 rounded-2xl shadow-lg dark:shadow-slate-900/50;
-}
-
-/* Text colors */
-.text-primary {
-  @apply text-[#1e3a5f] dark:text-white;
-}
-
-.text-accent {
-  @apply text-[#d4a853];
-}
-
-/* Button primary */
-.btn-primary {
-  @apply bg-[#d4a853] text-[#1e3a5f] hover:opacity-90;
+/* Utility classes using CSS variables */
+@layer utilities {
+  .bg-background {
+    background-color: var(--background);
+  }
+  .bg-card {
+    background-color: var(--card);
+  }
+  .bg-primary {
+    background-color: var(--primary);
+  }
+  .bg-accent {
+    background-color: var(--accent);
+  }
+  .bg-muted {
+    background-color: var(--muted);
+  }
+  
+  .text-foreground {
+    color: var(--foreground);
+  }
+  .text-primary {
+    color: var(--primary);
+  }
+  .text-accent {
+    color: var(--accent);
+  }
+  .text-muted-foreground {
+    color: var(--muted-foreground);
+  }
+  
+  .border-border {
+    border-color: var(--border);
+  }
+  
+  .from-primary {
+    --tw-gradient-from: var(--primary);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(var(--tw-gradient-to) / 0));
+  }
+  .to-primary {
+    --tw-gradient-to: var(--primary);
+  }
 }

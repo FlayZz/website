@@ -1,91 +1,68 @@
 'use client';
 
-import React, { useEffect, useRef, Suspense } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, MeshDistortMaterial, Float } from '@react-three/drei';
+import { useEffect, useRef, Suspense } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// 3D Lock Cylinder Component
-function LockCylinder({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
-  const meshRef = useRef<any>(null);
-  const { viewport } = useThree();
-
+// Metallic Sphere Component
+function MetallicSphere() {
+  const meshRef: any = useRef();
+  
   useFrame((state) => {
-    if (!meshRef.current) return;
-    
-    // Rotate based on mouse position
-    meshRef.current.rotation.y = mouseX * 0.5;
-    meshRef.current.rotation.x = -mouseY * 0.3;
-    
-    // Continuous rotation
-    meshRef.current.rotation.z += 0.002;
+    if (meshRef.current) {
+      meshRef.current.rotation.y += 0.003;
+      meshRef.current.rotation.x += 0.001;
+    }
   });
 
   return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-      <group ref={meshRef} scale={1.5}>
-        {/* Cylinder body */}
-        <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[1, 1, 2, 32]} />
-          <meshStandardMaterial 
-            color="#1e3a5f" 
-            metalness={0.9} 
-            roughness={0.1}
-          />
-        </mesh>
-        
-        {/* Gold ring */}
-        <mesh position={[0, 0.3, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[1.1, 0.08, 16, 100]} />
-          <meshStandardMaterial 
-            color="#d4a853" 
-            metalness={1} 
-            roughness={0.1}
-          />
-        </mesh>
-        
-        {/* Keyhole */}
-        <mesh position={[0, 0.6, 1]}>
-          <circleGeometry args={[0.3, 32]} />
-          <meshStandardMaterial color="#0f0f1a" />
-        </mesh>
-        
-        {/* Keyhole pin */}
-        <mesh position={[0, 0.3, 1.01]}>
-          <boxGeometry args={[0.1, 0.4, 0.02]} />
-          <meshStandardMaterial color="#0f0f1a" />
-        </mesh>
-      </group>
-    </Float>
+    <Sphere ref={meshRef} args={[1.5, 64, 64]} scale={1.8}>
+      <MeshDistortMaterial
+        color="#1e3a5f"
+        metalness={0.95}
+        roughness={0.05}
+        distort={0.15}
+        speed={2}
+        envMapIntensity={1}
+      />
+    </Sphere>
   );
 }
 
-// Mouse tracker component
-function MouseTracker({ onMove }: { onMove: (x: number, y: number) => void }) {
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth) * 2 - 1;
-      const y = -(e.clientY / window.innerHeight) * 2 + 1;
-      onMove(x, y);
-    };
-    
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [onMove]);
+// Gold Ring Component
+function GoldRing() {
+  const ringRef: any = useRef();
   
-  return null;
+  useFrame((state) => {
+    if (ringRef.current) {
+      ringRef.current.rotation.z -= 0.002;
+    }
+  });
+
+  return (
+    <mesh ref={ringRef} rotation={[Math.PI / 2, 0, 0]}>
+      <torusGeometry args={[2.2, 0.08, 16, 100]} />
+      <meshStandardMaterial 
+        color="#d4a853" 
+        metalness={1} 
+        roughness={0.1}
+        emissive="#d4a853"
+        emissiveIntensity={0.2}
+      />
+    </mesh>
+  );
 }
 
-// Loading fallback
+// Loader
 function Loader() {
   return (
-    <mesh>
-      <boxGeometry args={[1, 1, 1]} />
+    <Sphere args={[1, 32, 32]}>
       <meshBasicMaterial color="#1e3a5f" wireframe />
-    </mesh>
+    </Sphere>
   );
 }
 
@@ -95,11 +72,7 @@ interface HeroProps {
 
 export default function Hero({ onUrgenceClick }: HeroProps) {
   const heroRef = useRef<HTMLDivElement>(null);
-  const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (x: number, y: number) => {
-    setMousePos({ x, y });
-  };
+  const canvasRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -125,16 +98,16 @@ export default function Hero({ onUrgenceClick }: HeroProps) {
         { y: 0, opacity: 1, scale: 1, duration: 0.5 },
         '-=0.3'
       )
-      .fromTo('.hero-visual',
+      .fromTo(canvasRef.current,
         { opacity: 0, scale: 0.8 },
         { opacity: 1, scale: 1, duration: 0.8 },
         '-=0.5'
       );
 
       // Parallax on scroll
-      gsap.to('.hero-visual', {
+      gsap.to(canvasRef.current, {
         y: 100,
-        opacity: 0,
+        opacity: 0.3,
         scrollTrigger: {
           trigger: heroRef.current,
           start: 'top top',
@@ -210,8 +183,11 @@ export default function Hero({ onUrgenceClick }: HeroProps) {
             </div>
 
             <h1 
-              className="hero-title text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+              className="hero-title text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight"
+              style={{ 
+                fontFamily: 'Space Grotesk, sans-serif',
+                color: '#ffffff'
+              }}
             >
               <span className="word inline-block mx-1">Votre</span>
               <span className="word inline-block mx-1">serrurier</span>
@@ -220,15 +196,15 @@ export default function Hero({ onUrgenceClick }: HeroProps) {
               <span className="word inline-block mx-1">Rennes</span>
             </h1>
 
-            <p className="hero-subtitle text-lg md:text-xl text-gray-300 mb-8 max-w-xl mx-auto lg:mx-0">
+            <p className="hero-subtitle text-lg md:text-xl mb-8 max-w-xl mx-auto lg:mx-0" style={{ color: '#9ca3af' }}>
               Intervention rapide 24h/24, 7j/7. Devis gratuit. 
-              Sécurité et tranquillité pour votre logement ou entreprise.
+              sécurité et tranquillité pour votre logement ou entreprise.
             </p>
 
             <div className="hero-cta flex flex-wrap gap-4 justify-center lg:justify-start">
               <button
                 onClick={onUrgenceClick}
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105"
                 style={{ 
                   background: 'linear-gradient(135deg, #d4a853 0%, #b8923f 100%)', 
                   color: '#1e3a5f',
@@ -244,23 +220,27 @@ export default function Hero({ onUrgenceClick }: HeroProps) {
           </div>
 
           {/* 3D Canvas */}
-          <div className="hero-visual relative h-[400px] lg:h-[500px]">
-            <MouseTracker onMove={handleMouseMove} />
-            <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-              <ambientLight intensity={0.5} />
+          <div 
+            ref={canvasRef}
+            className="relative h-[400px] lg:h-[500px]"
+          >
+            <Canvas camera={{ position: [0, 0, 6], fov: 50 }}>
+              <ambientLight intensity={0.3} />
               <pointLight position={[10, 10, 10]} intensity={1} color="#d4a853" />
               <pointLight position={[-10, -10, -10]} intensity={0.5} color="#1e3a5f" />
+              <spotLight position={[0, 10, 0]} intensity={0.5} color="#ffffff" angle={0.5} />
               <Suspense fallback={<Loader />}>
-                <LockCylinder mouseX={mousePos.x} mouseY={mousePos.y} />
+                <MetallicSphere />
+                <GoldRing />
               </Suspense>
-              <OrbitControls enableZoom={false} enablePan={false} />
+              <OrbitControls enableZoom={false} enablePan={false} autoRotate={false} />
             </Canvas>
           </div>
         </div>
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
         <span className="text-xs uppercase tracking-widest">Découvrir</span>
         <div className="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-1">
           <div 
