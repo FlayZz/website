@@ -12,8 +12,8 @@ interface HeroProps {
 
 export default function Hero({ onUrgenceClick }: HeroProps) {
   const heroRef = useRef<HTMLDivElement>(null);
-  const [lockElement, setLockElement] = useState<SVGGElement | null>(null);
-  const [haloElement, setHaloElement] = useState<SVGEllipseElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const lockRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -25,167 +25,248 @@ export default function Hero({ onUrgenceClick }: HeroProps) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Hero animations timeline
+      // Entrance animations
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
       tl.fromTo('.hero-badge',
         { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.7)' }
+        { scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(1.7)' }
       )
       .fromTo('.hero-title .word',
-        { y: 100, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, stagger: 0.1 },
-        '-=0.2'
+        { y: 80, opacity: 0, rotateX: -90 },
+        { y: 0, opacity: 1, rotateX: 0, duration: 0.8, stagger: 0.08 },
+        '-=0.3'
       )
       .fromTo('.hero-subtitle',
         { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8 },
-        '-=0.5'
+        { y: 0, opacity: 1, duration: 0.6 },
+        '-=0.4'
       )
       .fromTo('.hero-cta',
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6 },
+        { y: 20, opacity: 0, scale: 0.9 },
+        { y: 0, opacity: 1, scale: 1, duration: 0.5 },
         '-=0.3'
       )
-      .fromTo('.hero-scroll',
-        { opacity: 0 },
-        { opacity: 1, duration: 0.5 },
-        '-=0.2'
+      .fromTo('.hero-visual',
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 0.8 },
+        '-=0.5'
       );
 
-      // Background grid animation
-      gsap.to('.hero-grid', {
-        backgroundPosition: '60px 60px',
-        duration: 20,
-        repeat: -1,
-        ease: 'none'
-      });
-
-      // Mouse movement effect on lock (desktop only)
-      if (!isMobile && lockElement) {
-        const handleMouseMove = (e: MouseEvent) => {
+      // Lock 3D effect on mouse move
+      if (!isMobile && lockRef.current) {
+        const lock = lockRef.current;
+        
+        window.addEventListener('mousemove', (e) => {
           const { clientX, clientY } = e;
           const centerX = window.innerWidth / 2;
           const centerY = window.innerHeight / 2;
           
-          const rotateX = (centerY - clientY) / 30; // Max 15deg
-          const rotateY = (clientX - centerX) / 30; // Max 15deg
+          const rotateY = ((clientX - centerX) / centerX) * 20;
+          const rotateX = ((centerY - clientY) / centerY) * 20;
           
-          gsap.to(lockElement, {
-            rotationX: rotateX,
+          gsap.to(lock, {
             rotationY: rotateY,
-            duration: 0.8,
+            rotationX: -rotateX,
+            duration: 1,
             ease: 'power2.out'
           });
-
-          // Halo effect
-          if (haloElement) {
-            const haloIntensity = Math.abs(rotateX) + Math.abs(rotateY);
-            gsap.to(haloElement, {
-              opacity: 0.3 + haloIntensity * 0.02,
-              attr: { rx: 90 + haloIntensity * 2, ry: 90 + haloIntensity * 2 },
-              duration: 0.5
-            });
-          }
-        };
-
-        const handleMouseLeave = () => {
-          gsap.to(lockElement, {
-            rotationX: 0,
-            rotationY: 0,
-            duration: 1,
-            ease: 'elastic.out(1, 0.5)'
-          });
-          if (haloElement) {
-            gsap.to(haloElement, {
-              opacity: 0.3,
-              attr: { rx: 90, ry: 90 },
-              duration: 1
-            });
-          }
-        };
-
-        window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('mouseleave', handleMouseLeave);
-
-        return () => {
-          window.removeEventListener('mousemove', handleMouseMove);
-          window.removeEventListener('mouseleave', handleMouseLeave);
-        };
-      }
-
-      // Mobile idle animation
-      if (isMobile && lockElement) {
-        gsap.to(lockElement, {
-          rotationY: 360,
-          duration: 20,
-          repeat: -1,
-          ease: 'none'
         });
       }
+
+      // Parallax on scroll
+      gsap.to('.hero-visual', {
+        y: 150,
+        opacity: 0.3,
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1
+        }
+      });
 
     }, heroRef);
 
     return () => ctx.revert();
   }, [isMobile]);
 
+  // Particle canvas effect
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || isMobile) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationId: number;
+    const particles: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      size: number;
+      alpha: number;
+    }> = [];
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Create particles
+    for (let i = 0; i < 50; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        size: Math.random() * 3 + 1,
+        alpha: Math.random() * 0.5 + 0.2
+      });
+    }
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(212, 168, 83, ${p.alpha})`;
+        ctx.fill();
+
+        // Draw connections
+        particles.forEach((p2) => {
+          const dx = p.x - p2.x;
+          const dy = p.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          if (dist < 150) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(212, 168, 83, ${0.1 * (1 - dist / 150)})`;
+            ctx.stroke();
+          }
+        });
+      });
+
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', resize);
+    };
+  }, [isMobile]);
+
   return (
     <section 
       ref={heroRef}
-      className="min-h-screen flex items-center justify-center relative overflow-hidden"
+      className="min-h-screen relative overflow-hidden flex items-center"
       style={{ 
-        background: 'linear-gradient(135deg, #1e3a5f 0%, #0f0f1a 50%, #2a4f7a 100%)'
+        background: 'linear-gradient(135deg, #0f0f1a 0%, #1e3a5f 50%, #0a0a15 100%)'
       }}
     >
-      {/* Background gradient */}
-      <div 
-        className="absolute inset-0"
-        style={{
-          background: 'radial-gradient(ellipse at 20% 80%, rgba(212,168,83,0.15) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(30,58,95,0.4) 0%, transparent 50%)'
-        }}
+      {/* Animated gradient orbs */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div 
+          className="absolute w-[600px] h-[600px] rounded-full opacity-30"
+          style={{
+            background: 'radial-gradient(circle, rgba(212,168,83,0.4) 0%, transparent 70%)',
+            top: '-200px',
+            right: '-100px',
+            animation: 'float 8s ease-in-out infinite'
+          }}
+        />
+        <div 
+          className="absolute w-[500px] h-[500px] rounded-full opacity-20"
+          style={{
+            background: 'radial-gradient(circle, rgba(30,58,95,0.5) 0%, transparent 70%)',
+            bottom: '-150px',
+            left: '-100px',
+            animation: 'float 10s ease-in-out infinite reverse'
+          }}
+        />
+      </div>
+
+      {/* Particles canvas */}
+      <canvas 
+        ref={canvasRef}
+        className="absolute inset-0 pointer-events-none"
+        style={{ opacity: isMobile ? 0 : 0.6 }}
       />
-      
-      {/* Grid pattern */}
+
+      {/* Grid overlay */}
       <div 
-        className="hero-grid absolute inset-0 opacity-20"
+        className="absolute inset-0 opacity-10"
         style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
-          backgroundSize: '60px 60px'
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px'
         }}
       />
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 relative z-10 w-full">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
-          <div>
+          <div className="text-center lg:text-left">
             <div className="hero-badge inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-full" 
-              style={{ backgroundColor: 'rgba(212,168,83,0.15)', border: '1px solid rgba(212,168,83,0.3)', color: '#d4a853' }}
+              style={{ 
+                backgroundColor: 'rgba(212,168,83,0.15)', 
+                border: '1px solid rgba(212,168,83,0.4)', 
+                color: '#d4a853' 
+              }}
             >
-              <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#d4a853' }}></span>
-              Dépannage urgent 24h/24 à Rennes
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: '#d4a853' }}></span>
+                <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: '#d4a853' }}></span>
+              </span>
+              Dépannage urgent 24h/24 - Rennes
             </div>
 
-            <h1 className="hero-title text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-              <span className="word block">Votre</span>
-              <span className="word block">Serrurier</span>
-              <span className="word block">de</span>
-              <span className="word block" style={{ color: '#d4a853' }}>Confiance</span>
-              <span className="word block">à Rennes</span>
+            <h1 
+              className="hero-title text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight"
+              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+            >
+              <span className="word inline-block mx-1">Votre</span>
+              <span className="word inline-block mx-1">serrurier</span>
+              <span className="word inline-block mx-1" style={{ color: '#d4a853' }}>expert</span>
+              <span className="word inline-block mx-1">à</span>
+              <span className="word inline-block mx-1">Rennes</span>
             </h1>
 
-            <p className="hero-subtitle text-xl text-gray-300 mb-8">
-              Intervention rapide 24h/24, 7j/7. Artisans certifiés, devis gratuit, qualité garantie. 
-              Sécurité et tranquillité d'esprit pour votre logement ou entreprise en Bretagne.
+            <p className="hero-subtitle text-lg md:text-xl text-gray-300 mb-8 max-w-xl mx-auto lg:mx-0">
+              Intervention rapide 24h/24, 7j/7. Devis gratuit. 
+              Sécurité et tranquillité pour votre logement ou entreprise.
             </p>
 
-            <div className="hero-cta flex flex-wrap gap-4">
+            <div className="hero-cta flex flex-wrap gap-4 justify-center lg:justify-start">
               <button
                 onClick={onUrgenceClick}
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-                style={{ backgroundColor: '#d4a853', color: '#1e3a5f' }}
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                style={{ 
+                  background: 'linear-gradient(135deg, #d4a853 0%, #b8923f 100%)', 
+                  color: '#1e3a5f',
+                  boxShadow: '0 10px 40px rgba(212,168,83,0.3)'
+                }}
               >
-                Demander un devis gratuit
+                Devis gratuit
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
@@ -193,127 +274,158 @@ export default function Hero({ onUrgenceClick }: HeroProps) {
             </div>
           </div>
 
-          {/* Visual - Lock Mechanism SVG */}
-          <div className="hidden lg:block relative" style={{ perspective: '1000px' }}>
-            <div className="relative w-96 h-96 mx-auto" style={{ perspective: '1000px' }}>
-              {/* Luminous halo */}
-              <svg 
-                viewBox="0 0 300 300" 
-                className="absolute inset-0 w-full h-full"
-                style={{ filter: 'blur(20px)' }}
+          {/* 3D Lock Visual */}
+          <div className="hero-visual relative flex items-center justify-center">
+            <div 
+              ref={lockRef}
+              className="relative w-72 h-72 md:w-96 md:h-96"
+              style={{ 
+                perspective: '1000px',
+                transformStyle: 'preserve-3d'
+              }}
+            >
+              {/* Glow effect */}
+              <div 
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: 'radial-gradient(circle, rgba(212,168,83,0.4) 0%, transparent 70%)',
+                  filter: 'blur(40px)',
+                  animation: 'pulse 3s ease-in-out infinite'
+                }}
+              />
+
+              {/* Lock body */}
+              <div 
+                className="absolute inset-0 flex items-center justify-center"
+                style={{ transform: 'translateZ(0)' }}
               >
-                <ellipse 
-                  ref={setHaloElement}
-                  cx="150" 
-                  cy="150" 
-                  rx="90" 
-                  ry="90" 
-                  fill="url(#haloGradient)"
-                  opacity="0.3"
-                />
-              </svg>
+                <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-2xl">
+                  <defs>
+                    <linearGradient id="lockBody" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#d4a853" />
+                      <stop offset="50%" stopColor="#b8923f" />
+                      <stop offset="100%" stopColor="#8b6914" />
+                    </linearGradient>
+                    <linearGradient id="lockShackle" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#e5c275" />
+                      <stop offset="50%" stopColor="#d4a853" />
+                      <stop offset="100%" stopColor="#b8923f" />
+                    </linearGradient>
+                    <filter id="glow">
+                      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                      <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                    <linearGradient id="cylinderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#2a4f7a" />
+                      <stop offset="50%" stopColor="#1e3a5f" />
+                      <stop offset="100%" stopColor="#152a45" />
+                    </linearGradient>
+                  </defs>
 
-              {/* Lock mechanism SVG */}
-              <svg 
-                ref={setLockElement}
-                viewBox="0 0 300 300" 
-                className="w-full h-full"
-                style={{ transformStyle: 'preserve-3d' }}
-              >
-                <defs>
-                  <linearGradient id="metalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#d4a853" />
-                    <stop offset="50%" stopColor="#b8923f" />
-                    <stop offset="100%" stopColor="#8b6914" />
-                  </linearGradient>
-                  <linearGradient id="cylinderGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#1e3a5f" />
-                    <stop offset="30%" stopColor="#2a4f7a" />
-                    <stop offset="70%" stopColor="#1e3a5f" />
-                    <stop offset="100%" stopColor="#152a45" />
-                  </linearGradient>
-                  <linearGradient id="haloGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#d4a853" stopOpacity="0.8" />
-                    <stop offset="100%" stopColor="#d4a853" stopOpacity="0" />
-                  </linearGradient>
-                  <filter id="glow">
-                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                    <feMerge>
-                      <feMergeNode in="coloredBlur"/>
-                      <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                  </filter>
-                </defs>
+                  {/* Shackle */}
+                  <path 
+                    d="M65 70 V50 A35 35 0 0 1 135 50 V70"
+                    fill="none"
+                    stroke="url(#lockShackle)"
+                    strokeWidth="18"
+                    strokeLinecap="round"
+                    filter="url(#glow)"
+                    style={{ transform: 'translateZ(20px)' }}
+                  />
 
-                {/* Lock body */}
-                <rect 
-                  x="60" 
-                  y="120" 
-                  width="180" 
-                  height="140" 
-                  rx="20" 
-                  fill="url(#metalGradient)"
-                  filter="url(#glow)"
-                />
+                  {/* Lock body */}
+                  <rect 
+                    x="40" 
+                    y="70" 
+                    width="120" 
+                    height="100" 
+                    rx="15"
+                    fill="url(#lockBody)"
+                    filter="url(#glow)"
+                    style={{ transform: 'translateZ(0px)' }}
+                  />
 
-                {/* Lock body highlight */}
-                <rect 
-                  x="70" 
-                  y="130" 
-                  width="160" 
-                  height="20" 
-                  rx="5" 
-                  fill="rgba(255,255,255,0.2)"
-                />
+                  {/* Body shine */}
+                  <rect 
+                    x="50" 
+                    y="80" 
+                    width="100" 
+                    height="15" 
+                    rx="5"
+                    fill="rgba(255,255,255,0.2)"
+                    style={{ transform: 'translateZ(1px)' }}
+                  />
 
-                {/* Shackle (arc) */}
-                <path 
-                  d="M90 120 V90 A60 60 0 0 1 210 90 V120" 
-                  fill="none" 
-                  stroke="url(#metalGradient)" 
-                  strokeWidth="25"
-                  strokeLinecap="round"
-                  filter="url(#glow)"
-                />
+                  {/* Cylinder */}
+                  <circle 
+                    cx="100" 
+                    cy="120" 
+                    r="35" 
+                    fill="url(#cylinderGrad)"
+                    stroke="#d4a853"
+                    strokeWidth="2"
+                    style={{ transform: 'translateZ(10px)' }}
+                  />
 
-                {/* Cylinder core */}
-                <circle 
-                  cx="150" 
-                  cy="190" 
-                  r="45" 
-                  fill="url(#cylinderGradient)"
-                  stroke="#d4a853"
-                  strokeWidth="3"
-                />
+                  {/* Keyhole */}
+                  <ellipse cx="100" cy="110" rx="10" ry="14" fill="#0f0f1a" />
+                  <rect x="94" y="115" width="12" height="25" rx="2" fill="#0f0f1a" />
 
-                {/* Cylinder keyhole */}
-                <ellipse cx="150" cy="175" rx="12" ry="18" fill="#0f0f1a" />
-                <rect x="144" y="185" width="12" height="35" rx="2" fill="#0f0f1a" />
-                
-                {/* Keyhole highlight */}
-                <ellipse cx="147" cy="172" rx="4" ry="6" fill="rgba(255,255,255,0.3)" />
+                  {/* Keyhole shine */}
+                  <ellipse cx="97" cy="107" rx="3" ry="4" fill="rgba(255,255,255,0.3)" />
 
-                {/* Pins inside cylinder */}
-                <rect x="120" y="160" width="8" height="25" rx="2" fill="#d4a853" opacity="0.7" />
-                <rect x="146" y="155" width="8" height="35" rx="2" fill="#d4a853" opacity="0.7" />
-                <rect x="172" y="160" width="8" height="25" rx="2" fill="#d4a853" opacity="0.7" />
+                  {/* Pins */}
+                  <rect x="75" y="100" width="6" height="20" rx="2" fill="#d4a853" opacity="0.6" />
+                  <rect x="97" y="95" width="6" height="28" rx="2" fill="#d4a853" opacity="0.6" />
+                  <rect x="119" y="100" width="6" height="20" rx="2" fill="#d4a853" opacity="0.6" />
 
-                {/* Decorative screws */}
-                <circle cx="85" cy="145" r="8" fill="#b8923f" />
-                <circle cx="215" cy="145" r="8" fill="#b8923f" />
-                <circle cx="85" cy="235" r="8" fill="#b8923f" />
-                <circle cx="215" cy="235" r="8" fill="#b8923f" />
-              </svg>
+                  {/* Screws */}
+                  <circle cx="55" cy="85" r="5" fill="#8b6914" />
+                  <circle cx="145" cy="85" r="5" fill="#8b6914" />
+                  <circle cx="55" cy="155" r="5" fill="#8b6914" />
+                  <circle cx="145" cy="155" r="5" fill="#8b6914" />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Scroll indicator */}
-      <div className="hero-scroll absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 text-white/50 text-xs uppercase tracking-widest">
-        <span>Découvrir</span>
-        <div className="w-px h-12 bg-gradient-to-b from-[#d4a853] to-transparent" />
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50">
+        <span className="text-xs uppercase tracking-widest">Découvrir</span>
+        <div className="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-1">
+          <div 
+            className="w-1.5 h-1.5 rounded-full"
+            style={{ 
+              backgroundColor: '#d4a853',
+              animation: 'scrollDown 2s ease-in-out infinite'
+            }}
+          />
+        </div>
       </div>
+
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-30px) rotate(5deg); }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 0.5; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.1); }
+        }
+        @keyframes scrollDown {
+          0% { transform: translateY(0); opacity: 1; }
+          50% { opacity: 0.5; }
+          100% { transform: translateY(20px); opacity: 0; }
+        }
+        .word {
+          backface-visibility: hidden;
+        }
+      `}</style>
     </section>
   );
 }
