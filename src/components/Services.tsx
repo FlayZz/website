@@ -55,7 +55,7 @@ export default function Services() {
           ease: 'power3.out',
           scrollTrigger: {
             trigger: '.services-grid',
-            start: 'top 80%',
+            start: 'top 90%',
           }
         }
       );
