@@ -1,10 +1,93 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, Suspense } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { OrbitControls, MeshDistortMaterial, Float } from '@react-three/drei';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
+
+// 3D Lock Cylinder Component
+function LockCylinder({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
+  const meshRef = useRef<any>(null);
+  const { viewport } = useThree();
+
+  useFrame((state) => {
+    if (!meshRef.current) return;
+    
+    // Rotate based on mouse position
+    meshRef.current.rotation.y = mouseX * 0.5;
+    meshRef.current.rotation.x = -mouseY * 0.3;
+    
+    // Continuous rotation
+    meshRef.current.rotation.z += 0.002;
+  });
+
+  return (
+    <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+      <group ref={meshRef} scale={1.5}>
+        {/* Cylinder body */}
+        <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[1, 1, 2, 32]} />
+          <meshStandardMaterial 
+            color="#1e3a5f" 
+            metalness={0.9} 
+            roughness={0.1}
+          />
+        </mesh>
+        
+        {/* Gold ring */}
+        <mesh position={[0, 0.3, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[1.1, 0.08, 16, 100]} />
+          <meshStandardMaterial 
+            color="#d4a853" 
+            metalness={1} 
+            roughness={0.1}
+          />
+        </mesh>
+        
+        {/* Keyhole */}
+        <mesh position={[0, 0.6, 1]}>
+          <circleGeometry args={[0.3, 32]} />
+          <meshStandardMaterial color="#0f0f1a" />
+        </mesh>
+        
+        {/* Keyhole pin */}
+        <mesh position={[0, 0.3, 1.01]}>
+          <boxGeometry args={[0.1, 0.4, 0.02]} />
+          <meshStandardMaterial color="#0f0f1a" />
+        </mesh>
+      </group>
+    </Float>
+  );
+}
+
+// Mouse tracker component
+function MouseTracker({ onMove }: { onMove: (x: number, y: number) => void }) {
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth) * 2 - 1;
+      const y = -(e.clientY / window.innerHeight) * 2 + 1;
+      onMove(x, y);
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [onMove]);
+  
+  return null;
+}
+
+// Loading fallback
+function Loader() {
+  return (
+    <mesh>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshBasicMaterial color="#1e3a5f" wireframe />
+    </mesh>
+  );
+}
 
 interface HeroProps {
   onUrgenceClick: () => void;
@@ -12,16 +95,11 @@ interface HeroProps {
 
 export default function Hero({ onUrgenceClick }: HeroProps) {
   const heroRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const lockRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
 
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const handleMouseMove = (x: number, y: number) => {
+    setMousePos({ x, y });
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -53,31 +131,10 @@ export default function Hero({ onUrgenceClick }: HeroProps) {
         '-=0.5'
       );
 
-      // Lock 3D effect on mouse move
-      if (!isMobile && lockRef.current) {
-        const lock = lockRef.current;
-        
-        window.addEventListener('mousemove', (e) => {
-          const { clientX, clientY } = e;
-          const centerX = window.innerWidth / 2;
-          const centerY = window.innerHeight / 2;
-          
-          const rotateY = ((clientX - centerX) / centerX) * 20;
-          const rotateX = ((centerY - clientY) / centerY) * 20;
-          
-          gsap.to(lock, {
-            rotationY: rotateY,
-            rotationX: -rotateX,
-            duration: 1,
-            ease: 'power2.out'
-          });
-        });
-      }
-
       // Parallax on scroll
       gsap.to('.hero-visual', {
-        y: 150,
-        opacity: 0.3,
+        y: 100,
+        opacity: 0,
         scrollTrigger: {
           trigger: heroRef.current,
           start: 'top top',
@@ -89,88 +146,7 @@ export default function Hero({ onUrgenceClick }: HeroProps) {
     }, heroRef);
 
     return () => ctx.revert();
-  }, [isMobile]);
-
-  // Particle canvas effect
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || isMobile) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animationId: number;
-    const particles: Array<{
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      size: number;
-      alpha: number;
-    }> = [];
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener('resize', resize);
-
-    // Create particles
-    for (let i = 0; i < 50; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        size: Math.random() * 3 + 1,
-        alpha: Math.random() * 0.5 + 0.2
-      });
-    }
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(212, 168, 83, ${p.alpha})`;
-        ctx.fill();
-
-        // Draw connections
-        particles.forEach((p2) => {
-          const dx = p.x - p2.x;
-          const dy = p.y - p2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          
-          if (dist < 150) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(212, 168, 83, ${0.1 * (1 - dist / 150)})`;
-            ctx.stroke();
-          }
-        });
-      });
-
-      animationId = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      cancelAnimationFrame(animationId);
-      window.removeEventListener('resize', resize);
-    };
-  }, [isMobile]);
+  }, []);
 
   return (
     <section 
@@ -181,7 +157,7 @@ export default function Hero({ onUrgenceClick }: HeroProps) {
       }}
     >
       {/* Animated gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
           className="absolute w-[600px] h-[600px] rounded-full opacity-30"
           style={{
@@ -202,16 +178,9 @@ export default function Hero({ onUrgenceClick }: HeroProps) {
         />
       </div>
 
-      {/* Particles canvas */}
-      <canvas 
-        ref={canvasRef}
-        className="absolute inset-0 pointer-events-none"
-        style={{ opacity: isMobile ? 0 : 0.6 }}
-      />
-
       {/* Grid overlay */}
       <div 
-        className="absolute inset-0 opacity-10"
+        className="absolute inset-0 opacity-10 pointer-events-none"
         style={{
           backgroundImage: `
             linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
@@ -274,122 +243,18 @@ export default function Hero({ onUrgenceClick }: HeroProps) {
             </div>
           </div>
 
-          {/* 3D Lock Visual */}
-          <div className="hero-visual relative flex items-center justify-center">
-            <div 
-              ref={lockRef}
-              className="relative w-72 h-72 md:w-96 md:h-96"
-              style={{ 
-                perspective: '1000px',
-                transformStyle: 'preserve-3d'
-              }}
-            >
-              {/* Glow effect */}
-              <div 
-                className="absolute inset-0 rounded-full"
-                style={{
-                  background: 'radial-gradient(circle, rgba(212,168,83,0.4) 0%, transparent 70%)',
-                  filter: 'blur(40px)',
-                  animation: 'pulse 3s ease-in-out infinite'
-                }}
-              />
-
-              {/* Lock body */}
-              <div 
-                className="absolute inset-0 flex items-center justify-center"
-                style={{ transform: 'translateZ(0)' }}
-              >
-                <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-2xl">
-                  <defs>
-                    <linearGradient id="lockBody" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#d4a853" />
-                      <stop offset="50%" stopColor="#b8923f" />
-                      <stop offset="100%" stopColor="#8b6914" />
-                    </linearGradient>
-                    <linearGradient id="lockShackle" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#e5c275" />
-                      <stop offset="50%" stopColor="#d4a853" />
-                      <stop offset="100%" stopColor="#b8923f" />
-                    </linearGradient>
-                    <filter id="glow">
-                      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                      <feMerge>
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="SourceGraphic"/>
-                      </feMerge>
-                    </filter>
-                    <linearGradient id="cylinderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#2a4f7a" />
-                      <stop offset="50%" stopColor="#1e3a5f" />
-                      <stop offset="100%" stopColor="#152a45" />
-                    </linearGradient>
-                  </defs>
-
-                  {/* Shackle */}
-                  <path 
-                    d="M65 70 V50 A35 35 0 0 1 135 50 V70"
-                    fill="none"
-                    stroke="url(#lockShackle)"
-                    strokeWidth="18"
-                    strokeLinecap="round"
-                    filter="url(#glow)"
-                    style={{ transform: 'translateZ(20px)' }}
-                  />
-
-                  {/* Lock body */}
-                  <rect 
-                    x="40" 
-                    y="70" 
-                    width="120" 
-                    height="100" 
-                    rx="15"
-                    fill="url(#lockBody)"
-                    filter="url(#glow)"
-                    style={{ transform: 'translateZ(0px)' }}
-                  />
-
-                  {/* Body shine */}
-                  <rect 
-                    x="50" 
-                    y="80" 
-                    width="100" 
-                    height="15" 
-                    rx="5"
-                    fill="rgba(255,255,255,0.2)"
-                    style={{ transform: 'translateZ(1px)' }}
-                  />
-
-                  {/* Cylinder */}
-                  <circle 
-                    cx="100" 
-                    cy="120" 
-                    r="35" 
-                    fill="url(#cylinderGrad)"
-                    stroke="#d4a853"
-                    strokeWidth="2"
-                    style={{ transform: 'translateZ(10px)' }}
-                  />
-
-                  {/* Keyhole */}
-                  <ellipse cx="100" cy="110" rx="10" ry="14" fill="#0f0f1a" />
-                  <rect x="94" y="115" width="12" height="25" rx="2" fill="#0f0f1a" />
-
-                  {/* Keyhole shine */}
-                  <ellipse cx="97" cy="107" rx="3" ry="4" fill="rgba(255,255,255,0.3)" />
-
-                  {/* Pins */}
-                  <rect x="75" y="100" width="6" height="20" rx="2" fill="#d4a853" opacity="0.6" />
-                  <rect x="97" y="95" width="6" height="28" rx="2" fill="#d4a853" opacity="0.6" />
-                  <rect x="119" y="100" width="6" height="20" rx="2" fill="#d4a853" opacity="0.6" />
-
-                  {/* Screws */}
-                  <circle cx="55" cy="85" r="5" fill="#8b6914" />
-                  <circle cx="145" cy="85" r="5" fill="#8b6914" />
-                  <circle cx="55" cy="155" r="5" fill="#8b6914" />
-                  <circle cx="145" cy="155" r="5" fill="#8b6914" />
-                </svg>
-              </div>
-            </div>
+          {/* 3D Canvas */}
+          <div className="hero-visual relative h-[400px] lg:h-[500px]">
+            <MouseTracker onMove={handleMouseMove} />
+            <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+              <ambientLight intensity={0.5} />
+              <pointLight position={[10, 10, 10]} intensity={1} color="#d4a853" />
+              <pointLight position={[-10, -10, -10]} intensity={0.5} color="#1e3a5f" />
+              <Suspense fallback={<Loader />}>
+                <LockCylinder mouseX={mousePos.x} mouseY={mousePos.y} />
+              </Suspense>
+              <OrbitControls enableZoom={false} enablePan={false} />
+            </Canvas>
           </div>
         </div>
       </div>
@@ -412,10 +277,6 @@ export default function Hero({ onUrgenceClick }: HeroProps) {
         @keyframes float {
           0%, 100% { transform: translateY(0) rotate(0deg); }
           50% { transform: translateY(-30px) rotate(5deg); }
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 0.5; transform: scale(1); }
-          50% { opacity: 0.8; transform: scale(1.1); }
         }
         @keyframes scrollDown {
           0% { transform: translateY(0); opacity: 1; }

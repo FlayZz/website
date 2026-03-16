@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
+import TrustBar from '@/components/TrustBar';
 import Services from '@/components/Services';
 import PartnerBrands from '@/components/PartnerBrands';
 import Counters from '@/components/Counters';
@@ -16,9 +17,10 @@ export default function Home() {
   const [isUrgenceOpen, setIsUrgenceOpen] = useState(false);
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-50 dark:bg-slate-900">
       <Header onUrgenceClick={() => setIsUrgenceOpen(true)} />
       <Hero onUrgenceClick={() => setIsUrgenceOpen(true)} />
+      <TrustBar />
       <Services />
       <PartnerBrands />
       <Counters />

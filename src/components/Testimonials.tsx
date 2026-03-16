@@ -114,8 +114,7 @@ export default function Testimonials() {
   return (
     <section 
       ref={sectionRef}
-      className="py-24 overflow-hidden"
-      style={{ backgroundColor: '#f8f6f0' }}
+      className="py-24 overflow-hidden bg-slate-50 dark:bg-slate-900 transition-colors"
     >
       <div className="max-w-7xl mx-auto px-4 mb-12">
         <div className="text-center">
@@ -126,12 +125,12 @@ export default function Testimonials() {
             Avis Clients
           </span>
           <h2 
-            className="testimonials-title text-3xl md:text-4xl font-bold mb-4"
+            className="testimonials-title text-3xl md:text-4xl font-bold mb-4 dark:text-white"
             style={{ color: '#1e3a5f', fontFamily: 'Space Grotesk, sans-serif' }}
           >
             Ce que disent nos clients
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             Faites glisser pour découvrir tous les avis →
           </p>
         </div>

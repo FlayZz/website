@@ -83,8 +83,7 @@ export default function Services() {
     <section 
       ref={sectionRef}
       id="services" 
-      className="py-24 bg-white"
-      style={{ backgroundColor: '#ffffff' }}
+      className="py-24 bg-white dark:bg-slate-800 transition-colors"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
@@ -95,12 +94,12 @@ export default function Services() {
             Nos Services
           </span>
           <h2 
-            className="services-title text-3xl md:text-4xl font-bold mb-4"
+            className="services-title text-3xl md:text-4xl font-bold mb-4 dark:text-white"
             style={{ color: '#1e3a5f', fontFamily: 'Space Grotesk, sans-serif' }}
           >
             Solutions complètes pour votre sécurité
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Artisans certifiés pour tous types de serrures et systèmes de fermeture à Rennes
           </p>
         </div>
@@ -109,8 +108,7 @@ export default function Services() {
           {services.map((service, index) => (
             <div
               key={index}
-              className="card-service bg-[#f8f6f0] rounded-2xl p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-              style={{ backgroundColor: '#f8f6f0' }}
+              className="card-service bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
             >
               {/* Accent bar */}
               <div 
@@ -126,12 +124,12 @@ export default function Services() {
               </div>
               
               <h3 
-                className="text-xl font-semibold mb-2"
+                className="text-xl font-semibold mb-2 dark:text-white"
                 style={{ color: '#1e3a5f', fontFamily: 'Space Grotesk, sans-serif' }}
               >
                 {service.title}
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 {service.description}
               </p>
             </div>

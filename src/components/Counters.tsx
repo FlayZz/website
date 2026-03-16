@@ -66,8 +66,7 @@ export default function Counters() {
   return (
     <section 
       ref={sectionRef}
-      className="py-20 bg-[#1e3a5f] relative overflow-hidden"
-      style={{ backgroundColor: '#1e3a5f' }}
+      className="py-20 bg-[#1e3a5f] dark:bg-slate-900 relative overflow-hidden"
     >
       {/* Pattern overlay */}
       <div className="absolute inset-0 opacity-5" 

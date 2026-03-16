@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion } from 'framer-motion';
@@ -91,8 +91,7 @@ export default function FAQ() {
     <section 
       ref={sectionRef}
       id="faq" 
-      className="py-24"
-      style={{ backgroundColor: '#ffffff' }}
+      className="py-24 bg-white dark:bg-slate-800 transition-colors"
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
@@ -103,12 +102,12 @@ export default function FAQ() {
             Foire Aux Questions
           </span>
           <h2 
-            className="faq-title text-3xl md:text-4xl font-bold mb-4"
+            className="faq-title text-3xl md:text-4xl font-bold mb-4 dark:text-white"
             style={{ color: '#1e3a5f', fontFamily: 'Space Grotesk, sans-serif' }}
           >
             Questions fréquentes sur nos services
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-600 dark:text-gray-300">
             Tout ce que vous devez savoir sur nos interventions de serrurerie à Rennes
           </p>
         </div>
@@ -117,9 +116,8 @@ export default function FAQ() {
           {faqItems.map((item, index) => (
             <div
               key={index}
-              className="faq-item rounded-xl overflow-hidden"
+              className="faq-item rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-700/50"
               style={{ 
-                backgroundColor: '#f8f6f0',
                 border: openIndex === index ? '2px solid #d4a853' : '2px solid transparent'
               }}
             >
@@ -157,7 +155,7 @@ export default function FAQ() {
                   transition: 'max-height 0.3s ease-out'
                 }}
               >
-                <div className="px-6 pb-6 text-gray-600 leading-relaxed">
+                <div className="px-6 pb-6 text-gray-600 dark:text-gray-300 leading-relaxed">
                   {item.answer}
                 </div>
               </div>
