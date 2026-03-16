@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import Services from '@/components/Services';
+import PartnerBrands from '@/components/PartnerBrands';
 import Counters from '@/components/Counters';
 import MapZone from '@/components/MapZone';
 import Testimonials from '@/components/Testimonials';
@@ -19,6 +20,7 @@ export default function Home() {
       <Header onUrgenceClick={() => setIsUrgenceOpen(true)} />
       <Hero onUrgenceClick={() => setIsUrgenceOpen(true)} />
       <Services />
+      <PartnerBrands />
       <Counters />
       <MapZone />
       <Testimonials />
