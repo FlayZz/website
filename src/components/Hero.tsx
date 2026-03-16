@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -12,6 +12,16 @@ interface HeroProps {
 
 export default function Hero({ onUrgenceClick }: HeroProps) {
   const heroRef = useRef<HTMLDivElement>(null);
+  const [lockElement, setLockElement] = useState<SVGGElement | null>(null);
+  const [haloElement, setHaloElement] = useState<SVGEllipseElement | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -51,10 +61,73 @@ export default function Hero({ onUrgenceClick }: HeroProps) {
         ease: 'none'
       });
 
+      // Mouse movement effect on lock (desktop only)
+      if (!isMobile && lockElement) {
+        const handleMouseMove = (e: MouseEvent) => {
+          const { clientX, clientY } = e;
+          const centerX = window.innerWidth / 2;
+          const centerY = window.innerHeight / 2;
+          
+          const rotateX = (centerY - clientY) / 30; // Max 15deg
+          const rotateY = (clientX - centerX) / 30; // Max 15deg
+          
+          gsap.to(lockElement, {
+            rotationX: rotateX,
+            rotationY: rotateY,
+            duration: 0.8,
+            ease: 'power2.out'
+          });
+
+          // Halo effect
+          if (haloElement) {
+            const haloIntensity = Math.abs(rotateX) + Math.abs(rotateY);
+            gsap.to(haloElement, {
+              opacity: 0.3 + haloIntensity * 0.02,
+              attr: { rx: 90 + haloIntensity * 2, ry: 90 + haloIntensity * 2 },
+              duration: 0.5
+            });
+          }
+        };
+
+        const handleMouseLeave = () => {
+          gsap.to(lockElement, {
+            rotationX: 0,
+            rotationY: 0,
+            duration: 1,
+            ease: 'elastic.out(1, 0.5)'
+          });
+          if (haloElement) {
+            gsap.to(haloElement, {
+              opacity: 0.3,
+              attr: { rx: 90, ry: 90 },
+              duration: 1
+            });
+          }
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseleave', handleMouseLeave);
+
+        return () => {
+          window.removeEventListener('mousemove', handleMouseMove);
+          window.removeEventListener('mouseleave', handleMouseLeave);
+        };
+      }
+
+      // Mobile idle animation
+      if (isMobile && lockElement) {
+        gsap.to(lockElement, {
+          rotationY: 360,
+          duration: 20,
+          repeat: -1,
+          ease: 'none'
+        });
+      }
+
     }, heroRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isMobile]);
 
   return (
     <section 
@@ -120,18 +193,117 @@ export default function Hero({ onUrgenceClick }: HeroProps) {
             </div>
           </div>
 
-          {/* Visual */}
-          <div className="hidden lg:block relative">
-            <div className="relative w-80 h-80 mx-auto">
-              {/* Animated lock icon */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <svg viewBox="0 0 200 200" className="w-full h-full" style={{ animation: 'rotateY 20s linear infinite' }}>
-                  <rect x="50" y="80" width="100" height="90" rx="10" fill="#d4a853" />
-                  <path d="M70 80 V60 A30 30 0 0 1 130 60 V80" fill="none" stroke="#d4a853" strokeWidth="15" />
-                  <circle cx="100" cy="125" r="15" fill="#1e3a5f" />
-                  <rect x="92" y="125" width="16" height="25" rx="3" fill="#1e3a5f" />
-                </svg>
-              </div>
+          {/* Visual - Lock Mechanism SVG */}
+          <div className="hidden lg:block relative" style={{ perspective: '1000px' }}>
+            <div className="relative w-96 h-96 mx-auto" style={{ perspective: '1000px' }}>
+              {/* Luminous halo */}
+              <svg 
+                viewBox="0 0 300 300" 
+                className="absolute inset-0 w-full h-full"
+                style={{ filter: 'blur(20px)' }}
+              >
+                <ellipse 
+                  ref={setHaloElement}
+                  cx="150" 
+                  cy="150" 
+                  rx="90" 
+                  ry="90" 
+                  fill="url(#haloGradient)"
+                  opacity="0.3"
+                />
+              </svg>
+
+              {/* Lock mechanism SVG */}
+              <svg 
+                ref={setLockElement}
+                viewBox="0 0 300 300" 
+                className="w-full h-full"
+                style={{ transformStyle: 'preserve-3d' }}
+              >
+                <defs>
+                  <linearGradient id="metalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#d4a853" />
+                    <stop offset="50%" stopColor="#b8923f" />
+                    <stop offset="100%" stopColor="#8b6914" />
+                  </linearGradient>
+                  <linearGradient id="cylinderGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#1e3a5f" />
+                    <stop offset="30%" stopColor="#2a4f7a" />
+                    <stop offset="70%" stopColor="#1e3a5f" />
+                    <stop offset="100%" stopColor="#152a45" />
+                  </linearGradient>
+                  <linearGradient id="haloGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#d4a853" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#d4a853" stopOpacity="0" />
+                  </linearGradient>
+                  <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge>
+                      <feMergeNode in="coloredBlur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                </defs>
+
+                {/* Lock body */}
+                <rect 
+                  x="60" 
+                  y="120" 
+                  width="180" 
+                  height="140" 
+                  rx="20" 
+                  fill="url(#metalGradient)"
+                  filter="url(#glow)"
+                />
+
+                {/* Lock body highlight */}
+                <rect 
+                  x="70" 
+                  y="130" 
+                  width="160" 
+                  height="20" 
+                  rx="5" 
+                  fill="rgba(255,255,255,0.2)"
+                />
+
+                {/* Shackle (arc) */}
+                <path 
+                  d="M90 120 V90 A60 60 0 0 1 210 90 V120" 
+                  fill="none" 
+                  stroke="url(#metalGradient)" 
+                  strokeWidth="25"
+                  strokeLinecap="round"
+                  filter="url(#glow)"
+                />
+
+                {/* Cylinder core */}
+                <circle 
+                  cx="150" 
+                  cy="190" 
+                  r="45" 
+                  fill="url(#cylinderGradient)"
+                  stroke="#d4a853"
+                  strokeWidth="3"
+                />
+
+                {/* Cylinder keyhole */}
+                <ellipse cx="150" cy="175" rx="12" ry="18" fill="#0f0f1a" />
+                <rect x="144" y="185" width="12" height="35" rx="2" fill="#0f0f1a" />
+                
+                {/* Keyhole highlight */}
+                <ellipse cx="147" cy="172" rx="4" ry="6" fill="rgba(255,255,255,0.3)" />
+
+                {/* Pins inside cylinder */}
+                <rect x="120" y="160" width="8" height="25" rx="2" fill="#d4a853" opacity="0.7" />
+                <rect x="146" y="155" width="8" height="35" rx="2" fill="#d4a853" opacity="0.7" />
+                <rect x="172" y="160" width="8" height="25" rx="2" fill="#d4a853" opacity="0.7" />
+
+                {/* Decorative screws */}
+                <circle cx="85" cy="145" r="8" fill="#b8923f" />
+                <circle cx="215" cy="145" r="8" fill="#b8923f" />
+                <circle cx="85" cy="235" r="8" fill="#b8923f" />
+                <circle cx="215" cy="235" r="8" fill="#b8923f" />
+              </svg>
             </div>
           </div>
         </div>

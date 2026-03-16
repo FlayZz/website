@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import Services from '@/components/Services';
 import Counters from '@/components/Counters';
 import MapZone from '@/components/MapZone';
 import Testimonials from '@/components/Testimonials';
+import FAQ from '@/components/FAQ';
 import Footer from '@/components/Footer';
 import UrgenceModal from '@/components/UrgenceModal';
 
@@ -22,6 +22,7 @@ export default function Home() {
       <Counters />
       <MapZone />
       <Testimonials />
+      <FAQ />
       <Footer />
       
       <UrgenceModal isOpen={isUrgenceOpen} onClose={() => setIsUrgenceOpen(false)} />
