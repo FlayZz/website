@@ -165,7 +165,7 @@ export default function Testimonials() {
             </div>
 
             <p className="text-gray-700 italic mb-6 leading-relaxed line-clamp-4">
-              "{testimonial.text}"
+              &ldquo;{testimonial.text}&rdquo;
             </p>
 
             <div className="flex items-center gap-4">

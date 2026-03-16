@@ -104,7 +104,7 @@ export default function SerrurierPage({ params }: { params: { ville: string } })
       <section className="py-16 bg-slate-50 dark:bg-slate-900">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-2xl font-bold text-center mb-8 dark:text-white" style={{ color: '#1e3a5f' }}>
-            Zone d'intervention à {cityData.name}
+            Zone d&apos;intervention à {cityData.name}
           </h2>
           <div className="h-[400px] rounded-2xl overflow-hidden shadow-lg mb-6">
             <MapWithNoSSR />
@@ -119,7 +119,7 @@ export default function SerrurierPage({ params }: { params: { ville: string } })
       <section className="py-16 bg-white dark:bg-slate-800">
         <div className="max-w-2xl mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold mb-4 dark:text-white" style={{ color: '#1e3a5f' }}>
-            Besoin d'un serrurier à {cityData.name} ?
+            Besoin d&apos;un serrurier à {cityData.name} ?
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
             Intervention rapide garantie. Devis gratuit sans engagement.

@@ -157,7 +157,7 @@ export default function LeafletMap() {
           <Popup>
             <div className="text-center p-2">
               <strong className="text-slate-600">Département {dept}</strong>
-              <p className="text-sm text-slate-500">Zone d'intervention</p>
+              <p className="text-sm text-slate-500">Zone d&apos;intervention</p>
             </div>
           </Popup>
         </Polygon>

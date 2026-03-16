@@ -74,7 +74,7 @@ export default function MapZone() {
             className="text-xs font-bold uppercase tracking-widest mb-4 block"
             style={{ color: '#d4a853' }}
           >
-            Zone d'intervention
+            Zone d&apos;intervention
           </span>
           <h2 
             className="text-3xl md:text-4xl font-bold mb-4 dark:text-white"

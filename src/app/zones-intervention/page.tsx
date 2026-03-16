@@ -23,7 +23,7 @@ export default function ZonesPage() {
       <section className="pt-32 pb-16" style={{ background: 'linear-gradient(135deg, #0f0f1a 0%, #1e3a5f 50%, #0a0a15 100%)' }}>
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-            Zones d'intervention
+            Zones d&apos;intervention
           </h1>
           <p className="text-xl text-gray-300">
             Intervention rapide 24h/24, 7j/7 en Bretagne et Pays de la Loire
@@ -94,10 +94,10 @@ export default function ZonesPage() {
       <section className="py-16 bg-white dark:bg-slate-800">
         <div className="max-w-2xl mx-auto px-4 text-center">
           <h3 className="text-2xl font-bold mb-4 dark:text-white" style={{ color: '#1e3a5f' }}>
-            Besoin d'un serrurier ?
+            Besoin d&apos;un serrurier ?
           </h3>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
-            N'hésitez pas à nous contacter pour toute demande de devis ou intervention urgente.
+            N&apos;hésitez pas à nous contacter pour toute demande de devis ou intervention urgente.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="tel:+33255996202" className="px-8 py-4 rounded-full font-bold" style={{ backgroundColor: '#d4a853', color: '#1e3a5f' }}>
