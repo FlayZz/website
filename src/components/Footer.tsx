@@ -31,11 +31,11 @@ export default function Footer() {
             </p>
             <div className="flex gap-4">
               <a 
-                href="tel:+33299123456"
+                href="tel:+33255996202"
                 className="px-4 py-2 rounded-lg font-semibold transition-opacity hover:opacity-90"
                 style={{ backgroundColor: '#d4a853', color: '#1e3a5f' }}
               >
-                02 99 12 34 56
+                02 55 99 62 02
               </a>
             </div>
           </div>
@@ -59,10 +59,10 @@ export default function Footer() {
             <ul className="space-y-2 text-white/60">
               <li><Link href="/" className="hover:text-white transition-colors">Accueil</Link></li>
               <li><Link href="/services" className="hover:text-white transition-colors">Nos services</Link></li>
+              <li><Link href="/zones-intervention" className="hover:text-white transition-colors">Zones intervention</Link></li>
               <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
               <li><Link href="/devis" className="hover:text-white transition-colors">Devis gratuit</Link></li>
               <li><Link href="/mentions-legales" className="hover:text-white transition-colors">Mentions légales</Link></li>
-              <li><Link href="/mentions-legales#confidentialite" className="hover:text-white transition-colors">Confidentialité</Link></li>
             </ul>
           </div>
         </div>
@@ -73,7 +73,7 @@ export default function Footer() {
             <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
             </svg>
-            <span>02 99 12 34 56</span>
+            <a href="tel:+33255996202" className="hover:text-white transition-colors">02 55 99 62 02</a>
           </div>
           <div className="flex items-center gap-3 text-white/60">
             <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

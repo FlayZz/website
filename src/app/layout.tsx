@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import SmoothScrollProvider from '@/components/SmoothScrollProvider';
 import FloatingCTA from '@/components/FloatingCTA';
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'SerruAccess - Serrurier Rennes | Intervention rapide 24h/24',
@@ -53,18 +54,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr">
+    <html lang="fr" suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
       </head>
-      <body className="antialiased">
-        <SmoothScrollProvider>
-          {children}
-          <FloatingCTA />
-        </SmoothScrollProvider>
+      <body className="antialiased transition-colors duration-300">
+        <ThemeProvider>
+          <SmoothScrollProvider>
+            {children}
+            <FloatingCTA />
+          </SmoothScrollProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

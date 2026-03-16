@@ -7,16 +7,20 @@ import dynamic from 'next/dynamic';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const communes = [
-  'Rennes', 'Cesson-Sévigné', 'Saint-Grégoire', 'Bruz', 'Pacé', 
-  'Vignoc', 'Langan', 'La Mézière', 'Clayes', 'Bécherel'
+const departments = [
+  { code: '35', name: 'Ille-et-Vilaine', priority: true },
+  { code: '29', name: 'Finistère', priority: false },
+  { code: '22', name: 'Côtes-d\'Armor', priority: false },
+  { code: '56', name: 'Morbihan', priority: false },
+  { code: '44', name: 'Loire-Atlantique', priority: false },
+  { code: '53', name: 'Mayenne', priority: false },
 ];
 
 const MapWithNoSSR = dynamic(() => import('@/components/LeafletMap'), {
   ssr: false,
   loading: () => (
-    <div className="h-full bg-gray-200 flex items-center justify-center">
-      <p className="text-gray-500">Chargement de la carte...</p>
+    <div className="h-full bg-gray-200 dark:bg-slate-700 flex items-center justify-center">
+      <p className="text-gray-500 dark:text-gray-400">Chargement...</p>
     </div>
   ),
 });
@@ -26,7 +30,6 @@ export default function MapZone() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Map and list animations
       gsap.fromTo('.map-content',
         { opacity: 0, x: -20 },
         {
@@ -41,7 +44,7 @@ export default function MapZone() {
         }
       );
 
-      gsap.fromTo('.communes-grid',
+      gsap.fromTo('.zone-info',
         { opacity: 0, x: 20 },
         {
           opacity: 1,
@@ -49,24 +52,8 @@ export default function MapZone() {
           duration: 0.8,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: '.communes-grid',
+            trigger: '.zone-info',
             start: 'top 80%',
-          }
-        }
-      );
-
-      // Stagger commune items
-      gsap.fromTo('.commune-item',
-        { opacity: 0, scale: 0.9 },
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 0.3,
-          stagger: 0.05,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: '.communes-grid',
-            start: 'top 75%',
           }
         }
       );
@@ -79,7 +66,7 @@ export default function MapZone() {
     <section 
       ref={sectionRef}
       id="zone" 
-      className="py-24 bg-white"
+      className="py-24 bg-white dark:bg-slate-800 transition-colors"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
@@ -90,13 +77,13 @@ export default function MapZone() {
             Zone d'intervention
           </span>
           <h2 
-            className="text-3xl md:text-4xl font-bold mb-4"
+            className="text-3xl md:text-4xl font-bold mb-4 dark:text-white"
             style={{ color: '#1e3a5f', fontFamily: 'Space Grotesk, sans-serif' }}
           >
-            Nous intervenons à Rennes et Bretagne
+            Intervention rapide à Rennes et Bretagne
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Intervention rapide sur Rennes et ses environs
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Intervention sous 30 minutes sur Rennes. Départements: 35, 29, 22, 56, 44, 53
           </p>
         </div>
 
@@ -106,46 +93,59 @@ export default function MapZone() {
             <MapWithNoSSR />
           </div>
 
-          {/* Communes list */}
-          <div className="communes-grid space-y-6">
+          {/* Zone Info */}
+          <div className="zone-info space-y-6">
+            {/* Priority Zone */}
             <div 
-              className="text-white rounded-2xl p-6"
-              style={{ backgroundColor: '#1e3a5f' }}
+              className="rounded-2xl p-6 text-white"
+              style={{ backgroundColor: '#d4a853' }}
             >
-              <h3 className="text-xl font-bold mb-2" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-                🚀 Intervention sous 30 minutes
+              <h3 className="text-xl font-bold mb-2" style={{ fontFamily: 'Space Grotesk, sans-serif', color: '#1e3a5f' }}>
+                ⚡ Intervention sous 30 minutes
               </h3>
-              <p className="text-blue-200">
-                Nous intervenons rapidement sur Rennes centre et toutes les communes limitrophes en Bretagne.
+              <p className="text-sm" style={{ color: '#1e3a5f' }}>
+                Nous intervenons rapidement sur Rennes centre et métropole.
               </p>
             </div>
 
+            {/* Departments */}
             <div>
-              <h4 className="text-lg font-semibold mb-4" style={{ color: '#1e3a5f' }}>
-                Communes desservies :
+              <h4 className="text-lg font-semibold mb-4 dark:text-white" style={{ color: '#1e3a5f' }}>
+               Départements couverts :
               </h4>
-              <div className="grid grid-cols-2 gap-3">
-                {communes.map((commune, index) => (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {departments.map((dept, index) => (
                   <div
                     key={index}
-                    className="commune-item flex items-center gap-2 text-gray-600"
+                    className={`flex items-center gap-2 p-3 rounded-xl ${
+                      dept.priority 
+                        ? 'bg-[#d4a853]/10 border-2 border-[#d4a853]' 
+                        : 'bg-gray-100 dark:bg-slate-700'
+                    }`}
                   >
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#d4a853' }}></span>
-                    {commune}
+                    <span className={`font-bold ${dept.priority ? 'text-[#d4a853]' : 'text-[#1e3a5f] dark:text-white'}`}>
+                      {dept.code}
+                    </span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">
+                      {dept.name}
+                    </span>
+                    {dept.priority && (
+                      <span className="ml-auto text-xs bg-[#d4a853] text-[#1e3a5f] px-2 py-0.5 rounded-full font-medium">
+                        30min
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
             </div>
 
+            {/* CTA */}
             <a
-              href="tel:+33299123456"
-              className="inline-flex items-center justify-center gap-2 w-full py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:opacity-90"
-              style={{ backgroundColor: '#d4a853', color: '#1e3a5f' }}
+              href="tel:+33255996202"
+              className="block w-full py-4 rounded-xl text-center font-bold transition-opacity hover:opacity-90"
+              style={{ backgroundColor: '#1e3a5f', color: 'white' }}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              02 99 12 34 56
+              📞 02 55 99 62 02
             </a>
           </div>
         </div>

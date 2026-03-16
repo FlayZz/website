@@ -16,6 +16,7 @@
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
+  @apply bg-gray-50 text-gray-900 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300;
 }
 
 /* Smooth scroll behavior for Lenis */
@@ -33,4 +34,37 @@ html.lenis {
 
 .lenis.lenis-stopped {
   overflow: hidden;
+}
+
+/* Dark mode specific overrides */
+.dark {
+  --bg-light: #0f0f1a;
+}
+
+/* Section backgrounds */
+.section-light {
+  @apply bg-white dark:bg-slate-800;
+}
+
+.section-dark {
+  @apply bg-gray-50 dark:bg-slate-900;
+}
+
+/* Card styles */
+.card {
+  @apply bg-white dark:bg-slate-800 rounded-2xl shadow-lg dark:shadow-slate-900/50;
+}
+
+/* Text colors */
+.text-primary {
+  @apply text-[#1e3a5f] dark:text-white;
+}
+
+.text-accent {
+  @apply text-[#d4a853];
+}
+
+/* Button primary */
+.btn-primary {
+  @apply bg-[#d4a853] text-[#1e3a5f] hover:opacity-90;
 }

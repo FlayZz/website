@@ -3,6 +3,8 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import Link from 'next/link';
+import { useTheme } from 'next-themes';
+import { useState } from 'react';
 
 interface HeaderProps {
   onUrgenceClick: () => void;
@@ -10,6 +12,12 @@ interface HeaderProps {
 
 export default function Header({ onUrgenceClick }: HeaderProps) {
   const headerRef = useRef<HTMLDivElement>(null);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!headerRef.current) return;
@@ -22,8 +30,10 @@ export default function Header({ onUrgenceClick }: HeaderProps) {
   return (
     <header 
       ref={headerRef}
-      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm shadow-sm"
-      style={{ backgroundColor: 'rgba(255,255,255,0.95)' }}
+      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md shadow-sm dark:shadow-none transition-colors duration-300"
+      style={{ 
+        backgroundColor: 'rgba(255,255,255,0.9)'
+      }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -37,36 +47,57 @@ export default function Header({ onUrgenceClick }: HeaderProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <span className="text-xl font-bold" style={{ color: '#1e3a5f', fontFamily: 'Space Grotesk, sans-serif' }}>SerruAccess</span>
+            <span className="text-xl font-bold dark:text-white" style={{ fontFamily: 'Space Grotesk, sans-serif', color: '#1e3a5f' }}>SerruAccess</span>
           </Link>
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="#services" className="text-gray-600 hover:text-[#1e3a5f] transition-colors font-medium">
+            <Link href="#services" className="text-gray-600 dark:text-gray-300 hover:text-[#1e3a5f] dark:hover:text-[#d4a853] transition-colors font-medium">
               Services
             </Link>
-            <Link href="#zone" className="text-gray-600 hover:text-[#1e3a5f] transition-colors font-medium">
+            <Link href="#zone" className="text-gray-600 dark:text-gray-300 hover:text-[#1e3a5f] dark:hover:text-[#d4a853] transition-colors font-medium">
               Zone
             </Link>
-            <Link href="#temoignages" className="text-gray-600 hover:text-[#1e3a5f] transition-colors font-medium">
-              Témoignages
+            <Link href="#faq" className="text-gray-600 dark:text-gray-300 hover:text-[#1e3a5f] dark:hover:text-[#d4a853] transition-colors font-medium">
+              FAQ
             </Link>
-            <Link href="/devis" className="text-gray-600 hover:text-[#1e3a5f] transition-colors font-medium">
+            <Link href="/devis" className="text-gray-600 dark:text-gray-300 hover:text-[#1e3a5f] dark:hover:text-[#d4a853] transition-colors font-medium">
               Devis
             </Link>
           </nav>
 
-          {/* Urgence Button */}
-          <button
-            onClick={onUrgenceClick}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 hover:scale-105"
-            style={{ backgroundColor: '#d4a853', color: '#1e3a5f' }}
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            URGENCE 24/7
-          </button>
+          <div className="flex items-center gap-3">
+            {/* Theme Toggle */}
+            {mounted && (
+              <button
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                aria-label="Changer de thème"
+              >
+                {theme === 'dark' ? (
+                  <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                  </svg>
+                )}
+              </button>
+            )}
+
+            {/* Urgence Button */}
+            <button
+              onClick={onUrgenceClick}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 hover:scale-105"
+              style={{ backgroundColor: '#d4a853', color: '#1e3a5f' }}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              URGENCE 24/7
+            </button>
+          </div>
         </div>
       </div>
     </header>
