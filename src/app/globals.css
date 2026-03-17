@@ -4,65 +4,39 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Light mode */
-  --background: #f8f6f0;
-  --foreground: #1a1a2e;
-  --card: #ffffff;
-  --card-foreground: #1a1a2e;
-  --popover: #ffffff;
-  --popover-foreground: #1a1a2e;
-  --primary: #1e3a5f;
-  --primary-foreground: #ffffff;
-  --secondary: #f8f6f0;
-  --secondary-foreground: #1a1a2e;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #d4a853;
-  --accent-foreground: #1e3a5f;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #1e3a5f;
-  
-  /* Brand colors */
-  --brand-primary: #1e3a5f;
-  --brand-accent: #d4a853;
-  --brand-gold: #d4a853;
+/* ============================================================
+   SERRUACCESS — STYLES GLOBAUX
+   
+   Ce fichier gère UNIQUEMENT :
+   - Les polices de caractères
+   - Le comportement du scrolling (Lenis)
+   - Les effets CSS avancés (.texture-card, .premium-bg)
+   
+   Pour changer les COULEURS, modifiez tailwind.config.js
+   ============================================================ */
+
+/* Base */
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply bg-zinc-200 text-zinc-900 transition-colors duration-300;
+    @apply dark:bg-zinc-950 dark:text-zinc-50;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: '"Space Grotesk"', system-ui, sans-serif;
+  }
 }
 
-.dark {
-  /* Dark mode */
-  --background: #0f0f1a;
-  --foreground: #f8f6f0;
-  --card: #1e293b;
-  --foreground: #f1f5f9;
-  --popover: #1e293b;
-  --popover-foreground: #f1f5f9;
-  --primary: #1e3a5f;
-  --primary-foreground: #ffffff;
-  --secondary: #1e293b;
-  --secondary-foreground: #f1f5f9;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #d4a853;
-  --accent-foreground: #1e3a5f;
-  --destructive: #7f1d1d;
-  --destructive-foreground: #f1f5f9;
-  --border: #334155;
-  --input: #334155;
-  --ring: #d4a853;
-}
-
+/* Fond texturé très léger */
 body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background-color: var(--background);
-  color: var(--foreground);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background-image: radial-gradient(circle at 2px 2px, rgba(0,0,0,0.02) 1px, transparent 0);
+  background-size: 40px 40px;
 }
 
-/* Smooth scroll behavior for Lenis */
+/* ============================================================
+   SMOOTH SCROLL (LENIS)
+   ============================================================ */
 html.lenis {
   height: auto;
 }
@@ -79,46 +53,70 @@ html.lenis {
   overflow: hidden;
 }
 
-/* Utility classes using CSS variables */
+/* ============================================================
+   EFFET GLASSMORPHISM — .texture-card
+   
+   Cet effet fonctionne grâce à backdrop-filter.
+   EN LIGHT MODE : Carte blanche translucide sur fond légèrement gris.
+   EN DARK MODE  : Carte sombre translucide sur fond anthracite.
+   
+   IMPORTANT : Pour que l'effet soit visible, le fond de la PAGE
+   doit être légèrement différent de la couleur blanche des cartes.
+   ============================================================ */
 @layer utilities {
-  .bg-background {
-    background-color: var(--background);
+  .texture-card {
+    /* Light mode */
+    background: rgba(95, 95, 95, 0.473);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(20, 20, 20, 0.9);
+    box-shadow:
+      0 4px 20px rgba(0, 0, 0, 0.04),
+      0 1px 2px rgba(0, 0, 0, 0.02),
+      inset 0 1px 0 #ffffff;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
   }
-  .bg-card {
-    background-color: var(--card);
+
+  .texture-card:hover {
+    border-color: #ff4f19;
+    box-shadow:
+      0 15px 45px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 1);
+    transform: translateY(-5px);
   }
-  .bg-primary {
-    background-color: var(--primary);
+
+  .dark .texture-card {
+    background: rgba(24, 24, 27, 0.7); /* zinc-900 avec transparence */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow:
+      0 4px 30px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.02);
   }
-  .bg-accent {
-    background-color: var(--accent);
+
+  .dark .texture-card:hover {
+    border-color: #ff4f19;
+    box-shadow:
+      0 1px 50px #d4a853,
+      inset 0 1px 0 rgba(95, 95, 95, 0.973);
+    transform: translateY(-5px);
   }
-  .bg-muted {
-    background-color: var(--muted);
-  }
-  
-  .text-foreground {
-    color: var(--foreground);
-  }
-  .text-primary {
-    color: var(--primary);
-  }
-  .text-accent {
-    color: var(--accent);
-  }
-  .text-muted-foreground {
-    color: var(--muted-foreground);
-  }
-  
-  .border-border {
-    border-color: var(--border);
-  }
-  
-  .from-primary {
-    --tw-gradient-from: var(--primary);
-    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(var(--tw-gradient-to) / 0));
-  }
-  .to-primary {
-    --tw-gradient-to: var(--primary);
-  }
+}
+
+/* ============================================================
+   SECTION PREMIUM — Fond avec dégradé subtil
+   ============================================================ */
+.premium-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  background: linear-gradient(to bottom, rgb(126, 126, 126) 0%, transparent 100%);
+  pointer-events: none;
 }

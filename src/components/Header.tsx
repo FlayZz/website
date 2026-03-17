@@ -31,32 +31,19 @@ export default function Header({ onUrgenceClick }: HeaderProps) {
   return (
     <header 
       ref={headerRef}
-      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-all duration-300"
-      style={{ 
-        backgroundColor: isDark ? 'rgba(15, 15, 26, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-        borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`
-      }}
+      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg border-b border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-950/80 transition-all duration-300"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div 
-              className="w-10 h-10 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: '#1e3a5f' }}
-            >
-              <svg className="w-6 h-6" style={{ color: 'white' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-brand-gold text-white group-hover:bg-brand-accent text-white transition-colors">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <span 
-              className="text-xl font-bold" 
-              style={{ 
-                fontFamily: 'Space Grotesk, sans-serif', 
-                color: '#1e3a5f' 
-              }}
-            >
-              SerruAccess
+            <span className="text-xl font-bold font-sans text-brand-gold dark:text-white">
+              Serru<span className="text-brand-accent">Access</span>
             </span>
           </Link>
 
@@ -65,11 +52,8 @@ export default function Header({ onUrgenceClick }: HeaderProps) {
             {['Services', 'Zone', 'FAQ', 'Devis'].map((item) => (
               <Link 
                 key={item}
-                href={item === 'Devis' ? '/devis' : `#${item.toLowerCase()}`}
-                className="font-medium transition-colors"
-                style={{ 
-                  color: isDark ? '#94a3b8' : '#4b5563'
-                }}
+                href={item === 'Devis' ? '/devis' : `/#${item.toLowerCase()}`}
+                className="font-semibold text-sm uppercase tracking-wider text-gray-600 dark:text-gray-400 hover:text-brand-accent transition-colors"
               >
                 {item}
               </Link>
@@ -81,11 +65,7 @@ export default function Header({ onUrgenceClick }: HeaderProps) {
             {mounted && (
               <button
                 onClick={() => setTheme(isDark ? 'light' : 'dark')}
-                className="p-2 rounded-lg transition-colors"
-                style={{ 
-                  backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
-                  color: isDark ? '#fbbf24' : '#6b7280'
-                }}
+                className="p-2 rounded-lg bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-yellow-400 hover:scale-110 transition-transform"
                 aria-label="Changer de thème"
               >
                 {isDark ? (
@@ -103,16 +83,12 @@ export default function Header({ onUrgenceClick }: HeaderProps) {
             {/* Urgence Button */}
             <button
               onClick={onUrgenceClick}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 hover:scale-105"
-              style={{ 
-                backgroundColor: '#d4a853', 
-                color: '#1e3a5f' 
-              }}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest bg-brand-accent text-white hover:scale-105 transition-all shadow-lg shadow-brand-accent/20 hover:bg-brand-accent-hover"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              URGENCE 24/7
+              Urgence 24/7
             </button>
           </div>
         </div>

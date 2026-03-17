@@ -66,7 +66,7 @@ export default function Counters() {
   return (
     <section 
       ref={sectionRef}
-      className="py-20 bg-[#1e3a5f] dark:bg-slate-900 relative overflow-hidden"
+      className="py-20 relative overflow-hidden bg-brand-navy"
     >
       {/* Pattern overlay */}
       <div className="absolute inset-0 opacity-5" 
@@ -78,14 +78,13 @@ export default function Counters() {
           {counters.map((counter, index) => (
             <div key={index} className="counter-item">
               <div 
-                className="counter-number text-5xl md:text-6xl font-bold text-[#d4a853] mb-2"
-                style={{ color: '#d4a853', fontFamily: 'Space Grotesk, sans-serif' }}
+                className="counter-number text-5xl md:text-6xl font-bold mb-2 text-brand-gold font-display"
                 data-target={counter.target}
                 data-suffix={counter.suffix}
               >
                 0
               </div>
-              <div className="text-white/80 text-lg">
+              <div className="text-zinc-900 dark:text-white/80 text-lg">
                 {counter.label}
               </div>
             </div>

@@ -43,11 +43,10 @@ export default function PartnerBrands() {
   return (
     <section 
       ref={sectionRef}
-      className="py-12"
-      style={{ backgroundColor: '#ffffff' }}
+      className="py-12 bg-zinc-100 dark:bg-zinc-800/50"
     >
       <div className="max-w-7xl mx-auto px-4">
-        <p className="text-center text-sm font-medium mb-8" style={{ color: '#7a7a8a' }}>
+        <p className="text-center text-sm font-medium mb-8 text-zinc-500 dark:text-zinc-400">
           Marques partenaires certifiées
         </p>
         
@@ -57,13 +56,10 @@ export default function PartnerBrands() {
               key={index}
               className="brand-item flex flex-col items-center gap-2 opacity-70 hover:opacity-100 transition-opacity"
             >
-              <div 
-                className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl"
-                style={{ backgroundColor: '#f8f6f0' }}
-              >
+              <div className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl bg-brand-navy dark:bg-brand-gold/20">
                 {brand.logo}
               </div>
-              <span className="text-xs font-medium" style={{ color: '#4a4a5a' }}>
+              <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                 {brand.name}
               </span>
             </div>

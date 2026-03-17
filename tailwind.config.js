@@ -8,14 +8,25 @@ module.exports = {
   ],
   theme: {
     extend: {
+      // ============================================================
+      // PALETTE DE MARQUE SERRUACCESS
+      // Pour changer les couleurs du site, modifiez ici.
+      // La couleur gold est utilisée via : bg-brand-gold, text-brand-gold
+      // La couleur navy est utilisée via : bg-brand-navy, text-brand-navy
+      // ============================================================
       colors: {
-        'pro-blue': '#1e40af',
-        'pro-blue-light': '#3b82f6',
-        'urgent-orange': '#f59e0b',
-        'urgent-orange-dark': '#d97706',
+        brand: {
+          gold:      '#d4a853', // Or — Accents, CTAs, icônes
+          'gold-hover': '#ff4f19', // Version hover de l'Or
+          navy:      '#ff4f19', // Bleu Navy — sections foncées, badges
+          'navy-light': '#ea00ffff', // Hover du Navy
+          accent:    '#ff4f198c', // Orange Urgence — boutons critiques
+          'accent-hover': '#e84300',
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
       },
     },
   },

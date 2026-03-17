@@ -1,0 +1,26 @@
+'use client';
+
+/* Dark Mode Variables */
+:root {
+  --background: #0f0f1a;
+  --foreground: #f8f6f0;
+  --card: #1e3a5f;
+  --card-foreground: #f8f6f0;
+  --accent: #d4a853;
+  --accent-foreground: #1e3a5f;
+  --border: #334155;
+  --border-light: #94a3b8;
+}
+
+/* Light Mode Variables */
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #f8f6f0;
+    --foreground: #1e3a5f;
+    --card: #ffffff;
+    --card-foreground: #1e3a5f;
+    --accent: #d4a853;
+    --accent-foreground: #f8f6f0;
+    --border: #334155;
+    --border-light: #94a3b8;
+ {

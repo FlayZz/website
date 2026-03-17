@@ -3,10 +3,19 @@ import './globals.css';
 import SmoothScrollProvider from '@/components/SmoothScrollProvider';
 import FloatingCTA from '@/components/FloatingCTA';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import Analytics from '@/components/Analytics';
 
 export const metadata: Metadata = {
   title: 'SerruAccess - Serrurier Rennes | Intervention rapide 24h/24',
   description: 'Serrurier professionnel à Rennes et Bretagne. Intervention rapide, urgences 24h/24, devis gratuit.',
+  robots: 'index, follow',
+  openGraph: {
+    title: 'SerruAccess - Serrurier Rennes',
+    description: 'Serrurier professionnel à Rennes et Bretagne. Intervention rapide 24h/24.',
+    type: 'website',
+    locale: 'fr_FR',
+    siteName: 'SerruAccess',
+  },
 };
 
 const faqJsonLd = {
@@ -56,12 +65,25 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <head>
+        {/* Google Analytics 4 */}
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX`} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-XXXXXXXXXX');
+            `,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
       </head>
       <body className="antialiased transition-colors duration-300">
+        <Analytics />
         <ThemeProvider>
           <SmoothScrollProvider>
             {children}
